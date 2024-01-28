@@ -6,7 +6,8 @@ public class PlayerMovement : MonoBehaviour
 {
     private float startSpeed;
     public float moveSpeed = 5f;
-    public float jumpSpeed = 10f;
+    public float aimSpeed = 5f;
+    public float jumpSpeed = 20f;
     public Rigidbody2D player_rigidbody;
     private Vector2 movement;
     private bool isGrounded;
@@ -14,6 +15,13 @@ public class PlayerMovement : MonoBehaviour
     //Timer
     private float jumpCheckTimer;
     private float grabCheckTimer;
+    private float conflictCheckTimer;
+    private bool setTimerGrab = false;
+    private bool setTimerJump = false;
+    private bool setTimerJump2 = false;
+    private bool setTimerConflict = false;
+    private float respond;
+    public float duration = 2f;
 
     void Start()
     {
@@ -25,34 +33,64 @@ public class PlayerMovement : MonoBehaviour
         ProcessInputs();
 
         //Check if Jump was hit by both with small delay using V and C as temp
-        jumpCheckTimer = 0;
-        if (Input.GetKey(KeyCode.V))
+        if (Input.GetKey(KeyCode.V) && !setTimerJump2)
         {
-            jumpCheckTimer += Time.deltaTime;
-            if (Input.GetKey(KeyCode.C) && jumpCheckTimer < jumpCheckTimer + 1)
+            if (!setTimerJump) 
             {
-                player_rigidbody.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Force);
+                jumpCheckTimer = Time.time;
+                setTimerJump = true;
+            }
+            {
+                respond = Time.time;
+                if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
+                    player_rigidbody.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Force);
+                }
             }
         }
-        jumpCheckTimer = 0;
-        if (Input.GetKey(KeyCode.C))
+        if (Input.GetKey(KeyCode.C) && !setTimerJump)
         {
-            jumpCheckTimer += Time.deltaTime;
-            if (Input.GetKey(KeyCode.V) && jumpCheckTimer < jumpCheckTimer + 1)
+            if (!setTimerJump2) 
             {
-                player_rigidbody.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Force);
+                jumpCheckTimer = Time.time;
+                setTimerJump2 = true;
             }
+            if (Input.GetKey(KeyCode.V))
+            {
+                respond = Time.time;
+                if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
+                    player_rigidbody.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Force);
+                }
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.V))
+        {
+            setTimerJump = false;
+        }
+        if (Input.GetKeyUp(KeyCode.C))
+        {
+            setTimerJump2 = false;
         }
 
         //Check if Grab was hit by both with small delay using N and M as temp
-        jumpCheckTimer = 0;
+        grabCheckTimer = 0;
         if (Input.GetKey(KeyCode.N))
         {
-            jumpCheckTimer += Time.deltaTime;
-            if (Input.GetKey(KeyCode.M) && grabCheckTimer < grabCheckTimer + 1)
+            if (!setTimerGrab) 
             {
-                //grab ledge
+                grabCheckTimer = Time.time;
+                setTimerGrab = true;
             }
+            if (Input.GetKey(KeyCode.M))
+            {
+                respond = Time.time;
+                if ((respond - jumpCheckTimer) > 0 && (respond - grabCheckTimer) < duration && isGrounded) {
+                    //grab ledge
+                }
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.N))
+        {
+            setTimerGrab = false;
         }
 
     }
@@ -67,16 +105,45 @@ public class PlayerMovement : MonoBehaviour
         //X and Y axis movement arrow or wasd works
         movement.x = Input.GetAxisRaw("Horizontal");
         //movement.y = Input.GetAxisRaw("Vertical");
+        conflictCheckTimer = 0;
+        if ((Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))) {
+            if (!setTimerConflict) 
+            {
+                conflictCheckTimer = Time.time;
+                setTimerConflict = true;
+            } else if ((Time.time - conflictCheckTimer) > duration) {
+                Debug.Log("Conflict");
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+        {
+            setTimerConflict = false;
+        }
 
         //Player 1
 
+        //Punch
+        if (Input.GetKey(KeyCode.Q))
+        {
+            Debug.Log("Punch");
+            /*Do damage to close enemies in range
+            Animation here
+            if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isPunchable)
+            {
+                Punch does damage  
+                Sound effect play
+                Visual indicator damage done
+            }
+            */
+        }
+        
         //Kick
         if (Input.GetKey(KeyCode.E))
         {
             Debug.Log("Kick");
             /*Do damage to close enemies in range
             Animation here
-            if (Vector2.Distance(transform.position, enemyLoc) < 0.5f)
+            if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isKickable)
             {
                 Kick does damage  
                 Sound effect play
@@ -91,7 +158,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("Shoot");
             /*transform.position = Vector2.MoveTowards(transform.position, enemyLoc, Speed * Time.deltaTime);
-            if (Vector2.Distance(transform.position, enemyLoc) < 0.5f)
+            if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isShootable)
             {
                 Bullet hit enemy so do effect here
                 Sound effect play
@@ -107,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("Stomp");
             /*Do damage to close enemies in range
             Animation here
-            if (Vector2.Distance(transform.position, enemyLoc) < 0.5f)
+            if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isStompable)
             {
                 Stomp does damage  
                 Sound effect play
@@ -140,6 +207,11 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionEnter2D(Collision2D Collider)
     {
         if (Collider.collider.gameObject.name == "spr_floor") isGrounded = true;
+    }
+
+    void OnCollisionExit2D(Collision2D Collider)
+    {
+        if (Collider.collider.gameObject.name == "spr_floor") isGrounded = false;
     }
 
     void ResetObj()
