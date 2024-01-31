@@ -8,8 +8,7 @@ public class _Enemy : MonoBehaviour
     [Tooltip("The amount of health the enemy currently has. At 0 or lower, it will be deleted.")] public int health;
 
     [Space(10)]
-    [Tooltip("The speed at which the enemy travels horizontally.")] public float speedX;
-    [Tooltip("The speed at which the enemy travels vertically.")] public float speedY;
+    [Tooltip("The speed at which the enemy travels.")] public float speed;
 
     [Header("GameObjects")]
     public Animator _animator;
@@ -18,7 +17,7 @@ public class _Enemy : MonoBehaviour
     [Tooltip("The effect that plays when the enemy is destroyed.")] public GameObject deathEffect;
 
     // Start is called before the first frame update
-    void Start()
+    public virtual void Start()
     {
         Application.targetFrameRate = 60;           // should be moved to a GameManager/scene script in the future
 
