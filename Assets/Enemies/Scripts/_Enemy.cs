@@ -12,6 +12,9 @@ public class _Enemy : MonoBehaviour
 
     [Header("GameObjects")]
     public Animator _animator;
+    public Rigidbody2D _rigidbody;
+    [Tooltip("The enemy's GroundCheck, used to determine if character is grounded.")] public Transform groundCheck;
+    [Tooltip("The ground layer in the scene, used to determine if character is grounded.")] public LayerMask groundLayer;
 
     [Space(10)]
     [Tooltip("The effect that plays when the enemy is destroyed.")] public GameObject deathEffect;
@@ -22,6 +25,8 @@ public class _Enemy : MonoBehaviour
         Application.targetFrameRate = 60;           // should be moved to a GameManager/scene script in the future
 
         _animator = this.GetComponent<Animator>();  // sets the animator to the animator of the gameobject
+        _rigidbody = this.GetComponent<Rigidbody2D>();  // sets the rigidbody to the rigidbody2D of the gameobject
+        groundLayer = LayerMask.GetMask("Ground");      // find ground layer
     }
 
     // Update is called once per frame
@@ -33,6 +38,12 @@ public class _Enemy : MonoBehaviour
     public virtual void Behaviour()
     {
         // Called in Update function. The unique behaviour of each individual enemy.
+    }
+
+    public RaycastHit2D GroundLinecast()
+    {
+        // calling this object requires the object to have a 
+        return Physics2D.Linecast(transform.position, groundCheck.position, groundLayer);
     }
 
     public void TakeDamage(int damageTaken)
