@@ -470,6 +470,9 @@ MonoBehaviour:
   aimSpeed: 5
   jumpSpeed: 10
   player_rigidbody: {fileID: 605518844}
+  gun: {fileID: 438662356}
+  bullet: {fileID: 8250794043270493214, guid: 28b080f54df767f41b8dab33a0593e03, type: 3}
+  duration: 2
 --- !u!1 &931733381
 GameObject:
   m_ObjectHideFlags: 0

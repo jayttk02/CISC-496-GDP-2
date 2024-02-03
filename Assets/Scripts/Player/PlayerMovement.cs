@@ -11,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D player_rigidbody;
     private Vector2 movement;
     private bool isGrounded;
+    public GameObject gun;
+    public GameObject bullet;
+    bool shooting = false;
 
     //Timer
     private float jumpCheckTimer;
@@ -154,9 +157,11 @@ public class PlayerMovement : MonoBehaviour
 
         //Player 2
         //Shoot
-        if (Input.GetKey(KeyCode.Keypad0))
+        if (Input.GetKey(KeyCode.E) && !shooting)
         {
             Debug.Log("Shoot");
+            shooting = true;
+            StartCoroutine(Fire());
             /*transform.position = Vector2.MoveTowards(transform.position, enemyLoc, Speed * Time.deltaTime);
             if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isShootable)
             {
@@ -217,5 +222,14 @@ public class PlayerMovement : MonoBehaviour
     void ResetObj()
     {
         //transform.position = player_rigidbody.transform.position;      
+    }
+
+    IEnumerator Fire()
+    {
+        float xOffset = Mathf.Cos(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
+        float yOffset = Mathf.Sin(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
+        Instantiate(bullet, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
+        yield return new WaitForSeconds(1f);
+        shooting = false;
     }
 }
