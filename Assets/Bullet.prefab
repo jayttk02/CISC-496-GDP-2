@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8250794043270493215}
   - component: {fileID: 4591259071649288055}
   - component: {fileID: 1689147521302854732}
+  - component: {fileID: 2477572284579889554}
   - component: {fileID: -3376956668215999750}
   - component: {fileID: 7215431094419559227}
   m_Layer: 0
@@ -113,8 +114,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d172a70a4a7a1d4ca26d4bb1e00243e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gun: {fileID: 0}
-  speed: 2
+  speed: 8
+--- !u!114 &2477572284579889554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8250794043270493214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98056b2c9bfef7c41bcaa01ebc1987a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isEnemyBullet: 0
 --- !u!61 &-3376956668215999750
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -122,10 +135,10 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8250794043270493214}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

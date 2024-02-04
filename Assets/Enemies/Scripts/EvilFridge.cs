@@ -18,7 +18,7 @@ public class EvilFridge : _Enemy
         if (shootTimerLeft == 0)
         {
             Instantiate(projectile, new Vector2(transform.position.x - 0.5f, transform.position.y), Quaternion.identity);   // spawns projectile when timer <= 0
-            TakeDamage(1);                      // inflicts 1 health worth of recoil (to display death state)
+            //TakeDamage(1);                      // inflicts 1 health worth of recoil (to display death state)
             shootTimerLeft = shootTimerMax;     // resets current timer value to maximum
         }
     }
