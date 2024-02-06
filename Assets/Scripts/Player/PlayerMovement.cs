@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded;
     public GameObject gun;
     public GameObject bullet;
+    public float jumpDuration = 1f;
     bool shooting = false;
 
     //Timer
@@ -46,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 respond = Time.time;
                 if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
-                    player_rigidbody.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Force);
+                    StartCoroutine(Jump());
                 }
             }
         }
@@ -61,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 respond = Time.time;
                 if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
-                    player_rigidbody.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Force);
+                    StartCoroutine(Jump());
                 }
             }
         }
@@ -86,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.M))
             {
                 respond = Time.time;
-                if ((respond - jumpCheckTimer) > 0 && (respond - grabCheckTimer) < duration && isGrounded) {
+                if ((respond - grabCheckTimer) > 0 && (respond - grabCheckTimer) < duration && isGrounded) {
                     //grab ledge
                 }
             }
@@ -231,5 +232,12 @@ public class PlayerMovement : MonoBehaviour
         Instantiate(bullet, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
         yield return new WaitForSeconds(1f);
         shooting = false;
+    }
+
+    IEnumerator Jump()
+    {
+        GetComponent<Rigidbody2D>().gravityScale = -1;
+        yield return new WaitForSeconds(jumpDuration);
+        GetComponent<Rigidbody2D>().gravityScale = 1;
     }
 }
