@@ -1,0 +1,38 @@
+.container{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.block {
+    border-radius: 0.5em 0.5em 0.5em 0.5em;
+    margin: 1% 1% 1% 1%;
+    padding: 1em 1em 1em 1em;
+    font-family: 'Courier New';
+    font-size: 1.2em;
+    font-weight: 800;
+    text-align: center;
+}
+
+.block.red {
+    background-color: #dc3333;
+    color: #680202;
+}
+
+.block.orange {
+    background-color: #ff8725;
+    color: #743400;
+}
+
+.block.yellow {
+    background-color: #ffe063;
+    color: #5a6802;
+}
+
+.block.green {
+    background-color: #82ff63;
+    color: #02682b;
+}
+
+.block:active {
+    filter: brightness(75%);
+}
