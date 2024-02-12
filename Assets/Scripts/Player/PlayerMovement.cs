@@ -44,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
                 jumpCheckTimer = Time.time;
                 setTimerJump = true;
             }
+            if (Input.GetKey(KeyCode.C))
             {
                 respond = Time.time;
                 if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
