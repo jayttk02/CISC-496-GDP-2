@@ -23,6 +23,10 @@ public class HealthSystem : MonoBehaviour
                 health = health -1;
                 Debug.Log(health);
             }
+            else if (other.gameObject.tag == "Spike"){
+                health = 0;
+            }
+
             if (health == 0){
                 ResetScene();
             }

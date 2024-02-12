@@ -239,7 +239,7 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator Jump()
     {
-        GetComponent<Rigidbody2D>().gravityScale = -15;
+        GetComponent<Rigidbody2D>().gravityScale = -17;
         yield return new WaitForSeconds(jumpDuration);
         GetComponent<Rigidbody2D>().gravityScale = 20;
     }
