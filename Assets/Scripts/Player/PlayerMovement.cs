@@ -27,6 +27,12 @@ public class PlayerMovement : MonoBehaviour
     private float respond;
     public float duration = 2f;
 
+    //Audio
+    public AudioSource se_walk;
+    public AudioSource se_jump;
+    public AudioSource se_shoot;
+    public AudioSource se_hit;
+
     void Start()
     {
         startSpeed = moveSpeed;
@@ -49,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
                 respond = Time.time;
                 if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
                     StartCoroutine(Jump());
+                    
                 }
             }
         }
@@ -64,6 +71,7 @@ public class PlayerMovement : MonoBehaviour
                 respond = Time.time;
                 if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
                     StartCoroutine(Jump());
+                   
                 }
             }
         }
@@ -115,7 +123,7 @@ public class PlayerMovement : MonoBehaviour
             if (!setTimerConflict) 
             {
                 conflictCheckTimer = Time.time;
-                setTimerConflict = true;
+                setTimerConflict = true;            
             } else if ((Time.time - conflictCheckTimer) > duration) {
                 Debug.Log("Conflict");
             }
@@ -163,6 +171,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("Shoot");
             shooting = true;
+            se_shoot.Play();
             StartCoroutine(Fire());
             /*transform.position = Vector2.MoveTowards(transform.position, enemyLoc, Speed * Time.deltaTime);
             if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isShootable)
@@ -213,6 +222,7 @@ public class PlayerMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D Collider)
     {
+        se_jump.Play();
         if (Collider.collider.gameObject.name == "spr_floor") isGrounded = true;
     }
 
@@ -227,12 +237,12 @@ public class PlayerMovement : MonoBehaviour
     }
 
     IEnumerator Fire()
-    {
+    {       
         float xOffset = Mathf.Cos(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         float yOffset = Mathf.Sin(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         Instantiate(bullet, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
         yield return new WaitForSeconds(1f);
-        shooting = false;
+        shooting = false;       
     }
 
     IEnumerator Jump()
