@@ -212,12 +212,14 @@ public class PlayerMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D Collider)
     {
-        if (Collider.collider.gameObject.name == "spr_floor") isGrounded = true;
+        if (Collider.collider.tag == "Ground") isGrounded = true;
+        //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = true;
     }
 
     void OnCollisionExit2D(Collision2D Collider)
     {
-        if (Collider.collider.gameObject.name == "spr_floor") isGrounded = false;
+        if (Collider.collider.tag == "Ground") isGrounded = false;
+        //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = false;
     }
 
     void ResetObj()
@@ -236,8 +238,8 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator Jump()
     {
-        GetComponent<Rigidbody2D>().gravityScale = -1;
+        GetComponent<Rigidbody2D>().gravityScale = -15;
         yield return new WaitForSeconds(jumpDuration);
-        GetComponent<Rigidbody2D>().gravityScale = 1;
+        GetComponent<Rigidbody2D>().gravityScale = 20;
     }
 }
