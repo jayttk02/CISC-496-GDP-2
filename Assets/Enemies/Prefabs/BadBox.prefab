@@ -132,10 +132,10 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 10
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -189,6 +189,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   deathEffect: {fileID: 3374455099600874160, guid: 1756b65fd97876a43be927466a72e98a, type: 3}
+  bossIntroDuration: 2
+  isInIntro: 0
   healthbarGO: {fileID: 0}
   healthbarName: {fileID: 0}
   healthbarSlider: {fileID: 0}

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public bool canMove;        // set to false if player is not supposed to be allowed to move (boss intros, etc.)
+
+    [Space(10)]
     private float startSpeed;
     public float moveSpeed = 5f;
     public float aimSpeed = 5f;
@@ -37,10 +40,17 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         startSpeed = moveSpeed;
+        canMove = true;     // canMove value starts true
     }
     // Update is called once per frame
     void Update()
     {
+        if (!canMove)       // if canMove is false, no other inputs go through
+        {
+            movement = new Vector2(0, 0);
+            return;
+        }
+
         ProcessInputs();
 
         //Check if Jump was hit by both with small delay using V and C as temp
