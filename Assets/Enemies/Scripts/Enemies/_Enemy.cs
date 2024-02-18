@@ -47,6 +47,22 @@ public class _Enemy : MonoBehaviour
         return Physics2D.Linecast(transform.position, groundCheck.position, groundLayer);
     }
 
+    public virtual void OnCollisionTrigger2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            TakeDamage(1);
+        }
+    }
+
+    public virtual void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            TakeDamage(1);
+        }
+    }
+
     public virtual void TakeDamage(int damageTaken)
     {
         health -= damageTaken;  // subtracts the current health value by the parameter

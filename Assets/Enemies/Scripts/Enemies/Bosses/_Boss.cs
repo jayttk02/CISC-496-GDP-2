@@ -17,7 +17,7 @@ public class _Boss : _Enemy
 
         healthbarName = healthbarGO.transform.GetChild(0).GetComponent<Text>();
         healthbarName.text = enemyName;
-        healthbarSlider = healthbarGO.transform.GetChild(1).GetChild(0).GetComponent<Slider>();
+        healthbarSlider = healthbarGO.transform.GetChild(1).GetComponent<Slider>();
         healthbarSlider.maxValue = health;
         healthbarSlider.value = health;
     }
@@ -31,6 +31,14 @@ public class _Boss : _Enemy
     //////////////////////////////////////////////////////////////////////////////
     // ENEMY FUNCTIONS ///////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////
+
+    public override void OnCollisionTrigger2D(Collision2D other)
+    {
+    }
+
+    public override void OnCollisionEnter2D(Collision2D other)
+    {
+    }
 
     public override void TakeDamage(int damageTaken)
     {
