@@ -741,10 +741,6 @@ MonoBehaviour:
   bullet: {fileID: 8250794043270493214, guid: 28b080f54df767f41b8dab33a0593e03, type: 3}
   jumpDuration: 1
   duration: 2
-  se_walk: {fileID: 889821896}
-  se_jump: {fileID: 616882998}
-  se_shoot: {fileID: 1218331682}
-  se_hit: {fileID: 1137557236}
 --- !u!114 &605518846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1559,7 +1555,7 @@ GameObject:
   - component: {fileID: 931733382}
   m_Layer: 6
   m_Name: spr_floor
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
