@@ -6,8 +6,9 @@ public class CameraFollow : MonoBehaviour
 {
     public Transform player;
     public float followSpeed = 2f;
-    public float xOffset = 4f;
+    public float xOffset = 3f;
     public float yOffset = 1f;
+    
     // Start is called before the first frame update
     void Start()
     {
