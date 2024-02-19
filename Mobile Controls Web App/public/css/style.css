@@ -24,54 +24,6 @@ body {
     height: -webkit-fill-available;
   }
 
- 
-  /* @media all and (orientation: portrait) {
-    body {
-        -webkit-transform: rotate(90deg); 
-        -moz-transform: rotate(90deg); 
-        -ms-transform: rotate(90deg); 
-        -o-transform: rotate(90deg); 
-        transform: rotate(90deg); 
-    }
-} */
-/* body, html {
-	margin: 0;
-	padding: 0;
-	height: 100%;
-	overflow: hidden;
-}
-#content {
-	position:absolute;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	top: 0
-}
-#content iframe{
-	width:100%;
-	height:100%;
-	border:none;
-}
-@media screen and (orientation:portrait) {
-	body { */
-		/* -webkit-transform: rotate(90deg); */
-		/* -webkit-transform-origin: 50% 50%; */
-		/* transform: rotate(90deg); */
-		/* transform-origin: 50% 50%; */
-	/* }
-} */
-/* html, body {
-    min-height: 100lvh; 
-    min-height: -webkit-fill-available;
-    overflow: hidden;
-    height: 100lvh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    touch-action:none;
-    height: calc(var(--vh, 1vh) \* 100);
-} */
-
-
 .block {
     border-radius: 0.5em 0.5em 0.5em 0.5em;
     /* margin: 1% 1% 1% 1%; */
@@ -106,6 +58,26 @@ body {
 .block.green {
     background-color: #82ff63;
     color: #02682b;
+}
+
+.block.blue {
+    background-color: aqua;
+    color: darkblue;
+}
+
+.block.purple {
+    background-color: rgb(176, 112, 216);
+    color: rgb(46, 9, 69);
+}
+
+.block.darkblue {
+    background-color: rgb(17, 164, 255);
+    color:rgb(9, 13, 69);
+}
+
+.block.pink {
+    background-color: rgb(255, 129, 209);
+    color: rgb(109, 10, 103);
 }
 
 .block:active {

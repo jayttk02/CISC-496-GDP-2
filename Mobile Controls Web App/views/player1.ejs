@@ -13,10 +13,10 @@
       <script type="module">
         import {createSocket} from "/js/webSocketConnect.js";
         const webSocket = createSocket();
-        document.getElementById('punch').addEventListener('click', function() {webSocket.send(0);});
-        document.getElementById('kick').addEventListener('click', function() {webSocket.send(1);});
-        document.getElementById('step forward').addEventListener('click', function() {webSocket.send(2);});
-        document.getElementById('grab').addEventListener('click', function() {webSocket.send(3);});
+        document.getElementById('punch').addEventListener('touchstart', function() {webSocket.send(0);});
+        document.getElementById('kick').addEventListener('touchstart', function() {webSocket.send(1);});
+        document.getElementById('step forward').addEventListener('touchstart', function() {webSocket.send(2);});
+        document.getElementById('grab').addEventListener('touchstart', function() {webSocket.send(3);});
     </script>
     </body>
 </html>
