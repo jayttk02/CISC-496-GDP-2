@@ -10,13 +10,30 @@
       <button class="block orange" id="kick"><div class="label">KICK</div></button>
       <button class="block green" id="step forward"><div class="label">STEP FORWARD</div></button>
       <button class="block yellow" id="grab"><div class="label">GRAB</div></button>      
+      <span id="Orientation_a">0</span>
+      <span id="Accelerometer_z">0</span>
       <script type="module">
-        import {createSocket} from "/js/webSocketConnect.js";
+        import { createSocket } from "/js/webSocketConnect.js";
         const webSocket = createSocket();
+
+        window.addEventListener("devicemotion", handleMotion);
+        window.addEventListener("deviceorientation", handleOrientation);
+        function handleOrientation(event){
+            updateFieldIfNotNull('Orientation_a', event.alpha);
+        }
+        function handleMotion(event){
+            updateFieldIfNotNull('Accelerometer_z', event.acceleration.z);
+        }
+        function updateFieldIfNotNull(fieldName, value, precision=1){
+            if (value != null)
+            document.getElementById(fieldName).innerHTML = value.toFixed(precision);
+            webSocket.send(value.toFixed(precision));
+        }
         document.getElementById('punch').addEventListener('touchstart', function() {webSocket.send(0);});
         document.getElementById('kick').addEventListener('touchstart', function() {webSocket.send(1);});
         document.getElementById('step forward').addEventListener('touchstart', function() {webSocket.send(2);});
         document.getElementById('grab').addEventListener('touchstart', function() {webSocket.send(3);});
+        
     </script>
     </body>
 </html>

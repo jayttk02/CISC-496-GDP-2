@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const expressip = require('express-ip');
 const express = require('express');
-// const ejs = require('ejs')
 
 var ips = new Map();
 var players = 0;
@@ -50,6 +49,14 @@ wss.on('connection', function connection(ws) {
 });
 
 app.get('/', function (req, res) {
+  res.render("start");
+});
+
+app.post('/', function (req, res) {
+  res.redirect(303, "/play");
+});
+
+app.get('/play', function (req, res) {
     const ip = req.ipInfo["ip"];
     if(!ips.has(ip)){
         players += 1;
