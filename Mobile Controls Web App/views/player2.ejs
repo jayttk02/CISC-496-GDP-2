@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, minimal-ui">
+    </head>
+    <body class="container">
+      <button class="block red" id="punch"><div class="label">TEST</div></button>
+      <button class="block orange" id="kick"><div class="label">KICK</div></button>
+      <button class="block green" id="step forward"><div class="label">STEP FORWARD</div></button>
+      <button class="block yellow" id="grab"><div class="label">GRAB</div></button>      
+      <script type="module">
+        import {createSocket} from "/js/webSocketConnect.js";
+        const webSocket = createSocket();
+        document.getElementById('punch').addEventListener('click', function() {webSocket.send(0);});
+        document.getElementById('kick').addEventListener('click', function() {webSocket.send(1);});
+        document.getElementById('step forward').addEventListener('click', function() {webSocket.send(2);});
+        document.getElementById('grab').addEventListener('click', function() {webSocket.send(3);});
+    </script>
+    </body>
+</html>
