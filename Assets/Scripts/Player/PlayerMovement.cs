@@ -14,9 +14,16 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 movement;
     private bool isGrounded;
     public GameObject gun;
+    public float gunOffset = 0.75f;
+    public GameObject leg;
+    public float legOffset = 0.5f;
+    public GameObject arm;
+    public float armOffset = 0.75f;
     public GameObject bullet;
     public float jumpDuration = 1f;
     bool shooting = false;
+    bool kicking = false;
+    bool punching = false;
 
     //Timer
     private float jumpCheckTimer;
@@ -71,6 +78,7 @@ public class PlayerMovement : MonoBehaviour
                 jumpCheckTimer = Time.time;
                 setTimerJump = true;
             }
+            if (Input.GetKey(KeyCode.C))
             {
                 respond = Time.time;
                 if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
@@ -154,9 +162,11 @@ public class PlayerMovement : MonoBehaviour
         //Player 1
 
         //Punch
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.Q) && !punching)
         {
             Debug.Log("Punch");
+            punching = true;
+            StartCoroutine(Punch());
             /*Do damage to close enemies in range
             Animation here
             if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isPunchable)
@@ -169,9 +179,11 @@ public class PlayerMovement : MonoBehaviour
         }
         
         //Kick
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKey(KeyCode.E) && !kicking)
         {
             Debug.Log("Kick");
+            kicking = true;
+            StartCoroutine(Kick());
             /*Do damage to close enemies in range
             Animation here
             if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isKickable)
@@ -235,16 +247,55 @@ public class PlayerMovement : MonoBehaviour
     void Move()
     {
         player_rigidbody.MovePosition(player_rigidbody.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
+        if (movement.x > 0) 
+        {
+            if (!kicking) {
+                leg.GetComponent<Follow>().xOffset = legOffset;
+            } else {
+                leg.GetComponent<Follow>().xOffset = legOffset + 0.5f;
+                if (leg.transform.eulerAngles.z > 300)
+                {
+                    leg.transform.Rotate (new Vector3 (0, 0, 60));
+                }
+            }
+            if (!punching) {
+                arm.GetComponent<Follow>().xOffset = armOffset;
+            } else {
+                arm.GetComponent<Follow>().xOffset = armOffset + 0.5f;
+            }
+            gun.GetComponent<Follow>().xOffset = gunOffset;
+        }
+        else if (movement.x < 0)
+        {
+            Debug.Log(leg.transform.eulerAngles.z);
+            if (!kicking) {
+                leg.GetComponent<Follow>().xOffset = -legOffset;
+            } else {
+                leg.GetComponent<Follow>().xOffset = -legOffset - 0.5f;
+                if (leg.transform.eulerAngles.z > 0 && leg.transform.eulerAngles.z < 300)
+                {
+                    leg.transform.Rotate (new Vector3 (0, 0, -60));
+                }
+            }
+            if (!punching) {
+                arm.GetComponent<Follow>().xOffset = -armOffset;
+            } else {
+                arm.GetComponent<Follow>().xOffset = -armOffset - 0.5f;
+            }
+            gun.GetComponent<Follow>().xOffset = -gunOffset;
+        }
     }
 
     void OnCollisionEnter2D(Collision2D Collider)
     {
-        if (Collider.collider.gameObject.name == "spr_floor") isGrounded = true;
+        if (Collider.collider.tag == "Ground") isGrounded = true;
+        //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = true;
     }
 
     void OnCollisionExit2D(Collision2D Collider)
     {
-        if (Collider.collider.gameObject.name == "spr_floor") isGrounded = false;
+        if (Collider.collider.tag == "Ground") isGrounded = false;
+        //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = false;
     }
 
     void ResetObj()
@@ -261,10 +312,58 @@ public class PlayerMovement : MonoBehaviour
         shooting = false;
     }
 
+    IEnumerator Kick()
+    {
+        if (leg.GetComponent<Follow>().xOffset > 0) 
+        {
+            leg.transform.Rotate (new Vector3 (0, 0, 30));
+            leg.GetComponent<Follow>().xOffset += 0.5f;
+        }
+        else if (leg.GetComponent<Follow>().xOffset < 0)
+        {
+            leg.transform.Rotate (new Vector3 (0, 0, -30));
+            leg.GetComponent<Follow>().xOffset -= 0.5f;
+        }
+        yield return new WaitForSeconds(0.5f);
+        if (leg.GetComponent<Follow>().xOffset > 0) 
+        {
+            leg.transform.Rotate (new Vector3 (0, 0, -30));
+            leg.GetComponent<Follow>().xOffset -= 0.5f;
+        }
+        else if (leg.GetComponent<Follow>().xOffset < 0)
+        {
+            leg.transform.Rotate (new Vector3 (0, 0, 30));
+            leg.GetComponent<Follow>().xOffset += 0.5f;
+        }
+        kicking = false;
+    }
+
+IEnumerator Punch()
+    {
+        if(arm.GetComponent<Follow>().xOffset > 0) 
+        {
+            arm.GetComponent<Follow>().xOffset += 0.5f;
+        }
+        else if (arm.GetComponent<Follow>().xOffset < 0)
+        {
+            arm.GetComponent<Follow>().xOffset -= 0.5f;
+        }
+        yield return new WaitForSeconds(0.5f);
+        if (arm.GetComponent<Follow>().xOffset > 0) 
+        {
+            arm.GetComponent<Follow>().xOffset -= 0.5f;
+        }
+        else if (arm.GetComponent<Follow>().xOffset < 0)
+        {
+            arm.GetComponent<Follow>().xOffset += 0.5f;
+        }
+        punching = false;
+    }
+
     IEnumerator Jump()
     {
-        GetComponent<Rigidbody2D>().gravityScale = -1;
+        GetComponent<Rigidbody2D>().gravityScale = -17;
         yield return new WaitForSeconds(jumpDuration);
-        GetComponent<Rigidbody2D>().gravityScale = 1;
+        GetComponent<Rigidbody2D>().gravityScale = 20;
     }
 }
