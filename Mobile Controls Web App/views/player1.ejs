@@ -19,19 +19,25 @@
         window.addEventListener("devicemotion", handleMotion);
         window.addEventListener("deviceorientation", handleOrientation);
         function handleOrientation(event){
-            updateFieldIfNotNull('Orientation_a', event.alpha);
+            // updateFieldIfNotNull('Orientation_a', event.alpha);
         }
         function handleMotion(event){
-            updateFieldIfNotNull('Accelerometer_z', event.acceleration.z);
+            // updateFieldIfNotNull('Accelerometer_z', event.acceleration.z);
         }
         function updateFieldIfNotNull(fieldName, value, precision=1){
             if (value != null)
             document.getElementById(fieldName).innerHTML = value.toFixed(precision);
             webSocket.send(value.toFixed(precision));
         }
+        var timer;
         document.getElementById('punch').addEventListener('touchstart', function() {webSocket.send(0);});
         document.getElementById('kick').addEventListener('touchstart', function() {webSocket.send(1);});
-        document.getElementById('step forward').addEventListener('touchstart', function() {webSocket.send(2);});
+        document.getElementById('step forward').addEventListener('pointerdown', function() {
+            timer=setInterval(function(){
+                webSocket.send("sf");
+            }, 1)
+        });
+        document.getElementById('step forward').addEventListener('pointerup', function() {if(timer) clearInterval(timer);});
         document.getElementById('grab').addEventListener('touchstart', function() {webSocket.send(3);});
         
     </script>

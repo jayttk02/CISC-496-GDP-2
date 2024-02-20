@@ -35,22 +35,20 @@ public class PlayerMovement : MonoBehaviour
     private bool setTimerConflict = false;
     private float respond;
     public float duration = 2f;
-
-    private bool stepForward;
-    private bool stepBackward;
-    private WebSocket wss;
     
-    private IDictionary<string, string> socketMap = new Dictionary<string,string>
+    private WebSocket wss;
+    private IDictionary<string, bool> socketMap = new Dictionary<string,bool>
     {
-        ["0"] = "value1",
-        ["key2"] = "value2",
-        ["key3"] = "value3"
+        ["sf"] = false,
+        ["sb"] = false,
+        ["1j"] = false,
+        ["2j"] = false,
+        ["p"] = false,
+        ["s"] = false,
+        ["k"] = false,
     };
 
-    void HandleSocketInput(string data)
-    {
-        
-    }
+    public float aimAngle;
     
     void Start()
     {
@@ -60,7 +58,15 @@ public class PlayerMovement : MonoBehaviour
         wss.OnMessage += (sender, e) =>
         {
             Debug.Log("Message Received from "+((WebSocket)sender).Url+", Data : "+e.Data);
-            HandleSocketInput(e.Data);
+            if (socketMap.ContainsKey(e.Data))
+            {
+                socketMap[e.Data] = true;
+            }
+            else if(e.Data.Substring(0, 2) == "a:")
+            {
+                aimAngle = float.Parse(e.Data.Substring(2), System.Globalization.CultureInfo.InvariantCulture);
+                Debug.Log(aimAngle);
+            }
         };
         
         startSpeed = moveSpeed;
@@ -71,41 +77,51 @@ public class PlayerMovement : MonoBehaviour
         ProcessInputs();
 
         //Check if Jump was hit by both with small delay using V and C as temp
-        if (Input.GetKey(KeyCode.V) && !setTimerJump2)
+        // if (Input.GetKey(KeyCode.V) && !setTimerJump2)
+        if(socketMap["1j"] && !setTimerJump2)
         {
             if (!setTimerJump) 
             {
                 jumpCheckTimer = Time.time;
                 setTimerJump = true;
             }
-            if (Input.GetKey(KeyCode.C))
+            // if (Input.GetKey(KeyCode.C))
+            if(socketMap["2j"])
             {
                 respond = Time.time;
-                if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
+                if ((respond - jumpCheckTimer) >= 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
                     StartCoroutine(Jump());
                 }
+                socketMap["1j"] = false;
+                socketMap["2j"] = false;
             }
         }
-        if (Input.GetKey(KeyCode.C) && !setTimerJump)
+        // if (Input.GetKey(KeyCode.C) && !setTimerJump)
+        if(socketMap["2j"] && !setTimerJump)
         {
             if (!setTimerJump2) 
             {
                 jumpCheckTimer = Time.time;
                 setTimerJump2 = true;
             }
-            if (Input.GetKey(KeyCode.V))
+            // if (Input.GetKey(KeyCode.V))
+            if(socketMap["1j"])
             {
                 respond = Time.time;
-                if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
+                if ((respond - jumpCheckTimer) >= 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
                     StartCoroutine(Jump());
                 }
+                socketMap["1j"] = false;
+                socketMap["2j"] = false;
             }
         }
-        if (Input.GetKeyUp(KeyCode.V))
+        // if (Input.GetKeyUp(KeyCode.V))
+        if(!socketMap["1j"])
         {
             setTimerJump = false;
         }
-        if (Input.GetKeyUp(KeyCode.C))
+        // if (Input.GetKeyUp(KeyCode.C))
+        if(!socketMap["2j"])
         {
             setTimerJump2 = false;
         }
@@ -122,7 +138,7 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.M))
             {
                 respond = Time.time;
-                if ((respond - grabCheckTimer) > 0 && (respond - grabCheckTimer) < duration && isGrounded) {
+                if ((respond - grabCheckTimer) >= 0 && (respond - grabCheckTimer) < duration && isGrounded) {
                     //grab ledge
                 }
             }
@@ -142,7 +158,22 @@ public class PlayerMovement : MonoBehaviour
     void ProcessInputs()
     {
         //X and Y axis movement arrow or wasd works
-        movement.x = Input.GetAxisRaw("Horizontal");
+        // movement.x = Input.GetAxisRaw("Horizontal");
+        if (socketMap["sf"])
+        {
+            movement.x = 1;
+            socketMap["sf"] = false;
+        }
+        else if (socketMap["sb"])
+        {
+            movement.x = -1;
+            socketMap["sb"] = false;
+        }
+        else
+        {
+            movement.x = 0;
+        }
+
         //movement.y = Input.GetAxisRaw("Vertical");
         conflictCheckTimer = 0;
         if ((Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))) {
@@ -162,7 +193,8 @@ public class PlayerMovement : MonoBehaviour
         //Player 1
 
         //Punch
-        if (Input.GetKey(KeyCode.Q) && !punching)
+        // if (Input.GetKey(KeyCode.Q) && !punching)
+        if(socketMap["p"] && !punching)
         {
             Debug.Log("Punch");
             punching = true;
@@ -179,7 +211,8 @@ public class PlayerMovement : MonoBehaviour
         }
         
         //Kick
-        if (Input.GetKey(KeyCode.E) && !kicking)
+        // if (Input.GetKey(KeyCode.E) && !kicking)
+        if(socketMap["k"] && !kicking)
         {
             Debug.Log("Kick");
             kicking = true;
@@ -197,7 +230,8 @@ public class PlayerMovement : MonoBehaviour
 
         //Player 2
         //Shoot
-        if (Input.GetKey(KeyCode.E) && !shooting)
+        // if (Input.GetKey(KeyCode.E) && !shooting)
+        if(socketMap["s"] && !shooting)
         {
             Debug.Log("Shoot");
             shooting = true;
@@ -310,6 +344,7 @@ public class PlayerMovement : MonoBehaviour
         Instantiate(bullet, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
         yield return new WaitForSeconds(1f);
         shooting = false;
+        socketMap["s"] = false;
     }
 
     IEnumerator Kick()
@@ -336,6 +371,7 @@ public class PlayerMovement : MonoBehaviour
             leg.GetComponent<Follow>().xOffset += 0.5f;
         }
         kicking = false;
+        socketMap["k"] = false;
     }
 
 IEnumerator Punch()
@@ -358,6 +394,7 @@ IEnumerator Punch()
             arm.GetComponent<Follow>().xOffset += 0.5f;
         }
         punching = false;
+        socketMap["p"] = false;
     }
 
     IEnumerator Jump()

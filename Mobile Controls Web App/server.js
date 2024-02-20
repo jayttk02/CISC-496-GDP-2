@@ -8,8 +8,8 @@ var ips = new Map();
 var players = 0;
 const maxPlayers = 2;
 const controls = new Map([
-    [1, "player1"],
-    [2, "player2"]
+    [1, "player1demo"],
+    [2, "player2demo"]
 ]);
 
 var privateKey  = fs.readFileSync('key.pem', 'utf8');
