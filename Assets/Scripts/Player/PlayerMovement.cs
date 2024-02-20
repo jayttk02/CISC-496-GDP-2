@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
+using WebSocketSharp;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -27,8 +29,33 @@ public class PlayerMovement : MonoBehaviour
     private float respond;
     public float duration = 2f;
 
+    private bool stepForward;
+    private bool stepBackward;
+    private WebSocket wss;
+    
+    private IDictionary<string, string> socketMap = new Dictionary<string,string>
+    {
+        ["0"] = "value1",
+        ["key2"] = "value2",
+        ["key3"] = "value3"
+    };
+
+    void HandleSocketInput(string data)
+    {
+        
+    }
+    
     void Start()
     {
+        wss = new WebSocket("wss://192.168.2.37:8443");
+        wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+        wss.Connect();
+        wss.OnMessage += (sender, e) =>
+        {
+            Debug.Log("Message Received from "+((WebSocket)sender).Url+", Data : "+e.Data);
+            HandleSocketInput(e.Data);
+        };
+        
         startSpeed = moveSpeed;
     }
     // Update is called once per frame
