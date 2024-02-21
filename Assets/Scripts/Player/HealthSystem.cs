@@ -20,17 +20,25 @@ public class HealthSystem : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D other) {
             if (other.gameObject.tag == "Enemy"){
-                health = health -1;
+                UpdateHealth(1);
                 Debug.Log(health);
             }
             else if (other.gameObject.tag == "Spike"){
                 health = 0;
-            }
-
-            if (health == 0){
-                ResetScene();
-            }
+                UpdateHealth();
         }
+
+    }
+
+    public void UpdateHealth(int healthLost = 0)
+    {
+        health -= healthLost;
+        if (health <= 0)
+        {
+            ResetScene();
+        }
+    }
+
     public void ResetScene(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

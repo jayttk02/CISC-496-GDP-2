@@ -15,7 +15,7 @@ public class EnemyDeathEffect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyDeathEffect1"))
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyDeathEffect1") || _animator.GetCurrentAnimatorStateInfo(0).IsName("BossDeathEffect1"))
         {
             Destroy(this.gameObject);   // once death animation has finished, object is destroyed
         }
