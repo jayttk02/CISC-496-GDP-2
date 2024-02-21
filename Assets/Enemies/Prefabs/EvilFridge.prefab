@@ -168,6 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfe7ecd8bc2746f4d937a20ddc7a3376, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyName: 
   health: 3
   speed: 0
   _animator: {fileID: 0}
@@ -197,7 +198,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7759112000689944991
 Transform:
   m_ObjectHideFlags: 0
