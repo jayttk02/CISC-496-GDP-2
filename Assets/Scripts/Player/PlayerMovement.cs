@@ -37,11 +37,14 @@ public class PlayerMovement : MonoBehaviour
     private float respond;
     public float duration = 2f;
 
+    public PlayerInputsUI playerInputsUI;       // script that effects the UI button display
+
     void Start()
     {
         startSpeed = moveSpeed;
         canMove = true;     // canMove value starts true
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -66,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
                 respond = Time.time;
                 if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
                     StartCoroutine(Jump());
+                    playerInputsUI.JumpUpdate();
                 }
             }
         }
@@ -81,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
                 respond = Time.time;
                 if ((respond - jumpCheckTimer) > 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
                     StartCoroutine(Jump());
+                    playerInputsUI.JumpUpdate();
                 }
             }
         }
@@ -92,6 +97,9 @@ public class PlayerMovement : MonoBehaviour
         {
             setTimerJump2 = false;
         }
+
+        playerInputsUI.ButtonHold("P1 Jump", Input.GetKey(KeyCode.V));      // player input ui checks if player 1's jump is held down
+        playerInputsUI.ButtonHold("P2 Jump", Input.GetKey(KeyCode.C));      // player input ui checks if player 2's jump is held down
 
         //Check if Grab was hit by both with small delay using N and M as temp
         grabCheckTimer = 0;
@@ -133,7 +141,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 conflictCheckTimer = Time.time;
                 setTimerConflict = true;
-            } else if ((Time.time - conflictCheckTimer) > duration) {
+                playerInputsUI.Conflict();  // triggers the player input ui to shake, indicating a conflict is occuring
+            } 
+            else if ((Time.time - conflictCheckTimer) > duration) {
                 Debug.Log("Conflict");
             }
         }
@@ -141,6 +151,9 @@ public class PlayerMovement : MonoBehaviour
         {
             setTimerConflict = false;
         }
+
+        playerInputsUI.ButtonHold("Step Forward", Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A));      // player input ui checks if step forward is held down
+        playerInputsUI.ButtonHold("Step Backward", Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D));    // player input ui checks if step backward is held down
 
         //Player 1
 
@@ -160,7 +173,8 @@ public class PlayerMovement : MonoBehaviour
             }
             */
         }
-        
+        playerInputsUI.ButtonHold("Punch", Input.GetKey(KeyCode.Q));    // player input ui checks if punch is held down
+
         //Kick
         if (Input.GetKey(KeyCode.E) && !kicking)
         {
@@ -177,6 +191,7 @@ public class PlayerMovement : MonoBehaviour
             }
             */
         }
+        playerInputsUI.ButtonHold("Kick", Input.GetKey(KeyCode.E));     // player input ui checks if kick is held down
 
         //Player 2
         //Shoot
@@ -196,6 +211,8 @@ public class PlayerMovement : MonoBehaviour
 
             */
         }
+        playerInputsUI.ButtonHold("Shoot", Input.GetKey(KeyCode.E));    // player input ui checks if shoot is held down
+
         //Stomp
         if (Input.GetKey(KeyCode.Keypad1))
         {
@@ -321,7 +338,7 @@ public class PlayerMovement : MonoBehaviour
         kicking = false;
     }
 
-IEnumerator Punch()
+    IEnumerator Punch()
     {
         if(arm.GetComponent<Follow>().xOffset > 0) 
         {
