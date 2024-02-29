@@ -297,7 +297,10 @@ public class PlayerMovement : MonoBehaviour
             leg.transform.Rotate (new Vector3 (0, 0, -30));
             leg.GetComponent<Follow>().xOffset -= 0.5f;
         }
-        yield return new WaitForSeconds(0.5f);
+        leg.GetComponent<BoxCollider2D>().enabled = true;
+        yield return new WaitForSeconds(0.01f);
+        leg.GetComponent<BoxCollider2D>().enabled = false;
+        yield return new WaitForSeconds(0.49f);
         if (leg.GetComponent<Follow>().xOffset > 0) 
         {
             leg.transform.Rotate (new Vector3 (0, 0, -30));
@@ -321,7 +324,10 @@ IEnumerator Punch()
         {
             arm.GetComponent<Follow>().xOffset -= 0.5f;
         }
-        yield return new WaitForSeconds(0.5f);
+        arm.GetComponent<BoxCollider2D>().enabled = true;
+        yield return new WaitForSeconds(0.01f);
+        arm.GetComponent<BoxCollider2D>().enabled = false;
+        yield return new WaitForSeconds(0.49f);
         if (arm.GetComponent<Follow>().xOffset > 0) 
         {
             arm.GetComponent<Follow>().xOffset -= 0.5f;
@@ -338,5 +344,13 @@ IEnumerator Punch()
         GetComponent<Rigidbody2D>().gravityScale = -17;
         yield return new WaitForSeconds(jumpDuration);
         GetComponent<Rigidbody2D>().gravityScale = 20;
+    }
+
+    public bool iskicking() {
+        return kicking;
+    }
+
+    public bool ispunching() {
+        return punching;
     }
 }
