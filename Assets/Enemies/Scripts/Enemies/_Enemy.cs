@@ -63,6 +63,11 @@ public class _Enemy : MonoBehaviour
         }
     }
 
+    public virtual void BulletCollision(int strength)
+    {
+        TakeDamage(strength);
+    }
+
     public virtual void TakeDamage(int damageTaken)
     {
         health -= damageTaken;  // subtracts the current health value by the parameter

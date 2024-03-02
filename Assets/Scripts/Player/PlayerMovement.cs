@@ -152,8 +152,8 @@ public class PlayerMovement : MonoBehaviour
             setTimerConflict = false;
         }
 
-        playerInputsUI.ButtonHold("Step Forward", Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A));      // player input ui checks if step forward is held down
-        playerInputsUI.ButtonHold("Step Backward", Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D));    // player input ui checks if step backward is held down
+        playerInputsUI.ButtonHold("Step Forward", Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D));      // player input ui checks if step forward is held down
+        playerInputsUI.ButtonHold("Step Backward", Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A));    // player input ui checks if step backward is held down
 
         //Player 1
 
@@ -267,7 +267,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (movement.x < 0)
         {
-            Debug.Log(leg.transform.eulerAngles.z);
+            //Debug.Log(leg.transform.eulerAngles.z);
             if (!kicking) {
                 leg.GetComponent<Follow>().xOffset = -legOffset;
             } else {
