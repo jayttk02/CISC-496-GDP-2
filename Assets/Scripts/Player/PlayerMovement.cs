@@ -7,6 +7,7 @@ using WebSocketSharp;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public string ip;
     private float startSpeed;
     public float moveSpeed = 5f;
     public float aimSpeed = 5f;
@@ -53,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
     
     void Start()
     {
-        wss = new WebSocket("wss://10.216.102.109:8443");
+        wss = new WebSocket("wss://"+ ip + ":8443");
         wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
         wss.Connect();
         wss.OnMessage += (sender, e) =>
