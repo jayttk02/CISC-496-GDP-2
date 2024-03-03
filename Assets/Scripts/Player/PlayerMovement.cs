@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,12 +53,12 @@ public class PlayerMovement : MonoBehaviour
     
     void Start()
     {
-        wss = new WebSocket("wss://192.168.2.37:8443");
+        wss = new WebSocket("wss://10.216.102.109:8443");
         wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
         wss.Connect();
         wss.OnMessage += (sender, e) =>
         {
-            Debug.Log("Message Received from "+((WebSocket)sender).Url+", Data : "+e.Data);
+            // Debug.Log("Message Received from "+((WebSocket)sender).Url+", Data : "+e.Data);
             if (socketMap.ContainsKey(e.Data))
             {
                 socketMap[e.Data] = true;
@@ -65,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
             else if(e.Data.Substring(0, 2) == "a:")
             {
                 aimAngle = float.Parse(e.Data.Substring(2), System.Globalization.CultureInfo.InvariantCulture);
-                Debug.Log(aimAngle);
+                // Debug.Log(aimAngle);
             }
         };
         
@@ -155,6 +156,27 @@ public class PlayerMovement : MonoBehaviour
         Move();
     }
 
+    IEnumerator Smooth()
+    {
+        float offset;
+        if (movement.x > 0)
+        {
+            offset = -0.1f;
+        }
+        else
+        {
+            offset = 0.1f;
+        }
+
+        while (Math.Abs(movement.x) > 0.1)
+        {
+            movement.x += offset;
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        movement.x = 0;
+    }
+
     void ProcessInputs()
     {
         //X and Y axis movement arrow or wasd works
@@ -169,12 +191,14 @@ public class PlayerMovement : MonoBehaviour
             movement.x = -1;
             socketMap["sb"] = false;
         }
-        else
+        else if(movement.x != 0)
         {
-            movement.x = 0;
+            StartCoroutine(Smooth());
         }
+        
 
         //movement.y = Input.GetAxisRaw("Vertical");
+        // TODO: update w/ mobile controls
         conflictCheckTimer = 0;
         if ((Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))) {
             if (!setTimerConflict) 

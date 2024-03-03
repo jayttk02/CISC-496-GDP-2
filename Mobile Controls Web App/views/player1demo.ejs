@@ -60,7 +60,7 @@
         document.getElementById('step forward').addEventListener('pointerdown', function() {
             timer=setInterval(function(){
                 webSocket.send("sf");
-            }, 1)
+            }, 0)
         });
         document.getElementById('step forward').addEventListener('pointerup', function() {if(timer) clearInterval(timer);});
         document.getElementById('jump').addEventListener('touchstart', function() {webSocket.send("1j");});
