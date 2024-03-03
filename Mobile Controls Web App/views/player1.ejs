@@ -27,33 +27,14 @@
             document.body.appendChild(buttonUtil.stepForward(webSocket));
         }
 
-        var rawAngles = [];
-        var normAngles = [];
-        var normAxis = 0;
-
         window.addEventListener("deviceorientation", handleOrientation);
         function handleOrientation(event){
-            updateFieldIfNotNull(event.alpha);
+            updateFieldIfNotNull(event.beta);
         }
         function updateFieldIfNotNull(value, precision=0){
             if (value != null){
-                if(value > 180){ 
-                    value -= 360; 
-                }
                 value = value.toFixed(precision);
-                rawAngles.push(value);
-                while(normAngles.length < 50){
-                    normAngles.push(value);
-                }
-                if(rawAngles.length > 100){
-                    normAngles.push(rawAngles[rawAngles.length - 1]);
-                    normAngles.shift();
-                    rawAngles = [];
-                }
-                normAngles.forEach((elem) => normAxis = +normAxis + +elem);
-                normAxis = (+normAxis / normAngles.length).toFixed(precision);   
-                webSocket.send("a: " + (+value - +normAxis));
-                normAxis = 0;
+                webSocket.send("a: " + value * -3);
             }
         }    
     </script>
