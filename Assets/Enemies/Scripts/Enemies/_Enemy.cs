@@ -31,7 +31,7 @@ public class _Enemy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Behaviour();    // contains the unique behavior of each individual enemy
     }
