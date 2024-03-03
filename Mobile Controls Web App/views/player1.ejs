@@ -6,40 +6,56 @@
         <meta name="viewport" content="width=device-width, minimal-ui">
     </head>
     <body class="container">
-      <button class="block red" id="punch"><div class="label">PUNCH</div></button>
-      <button class="block orange" id="kick"><div class="label">KICK</div></button>
-      <button class="block green" id="step forward"><div class="label">STEP FORWARD</div></button>
-      <button class="block yellow" id="grab"><div class="label">GRAB</div></button>      
-      <span id="Orientation_a">0</span>
-      <span id="Accelerometer_z">0</span>
+       <h1 hidden id="level"><%= level %></h1>
       <script type="module">
         import { createSocket } from "/js/webSocketConnect.js";
         const webSocket = createSocket();
 
-        window.addEventListener("devicemotion", handleMotion);
+        import * as buttonUtil from "/js/buttonUtil.js"
+
+        var level = document.getElementById("level").innerHTML;
+        
+        var jump = buttonUtil.player1Jump(webSocket);
+        if(level == 1){
+            document.body.appendChild(buttonUtil.stepForward(webSocket));
+            document.body.appendChild(jump);
+        }
+        else if(level == 2){
+            document.body.appendChild(buttonUtil.punch(webSocket));
+            jump.style.gridRow = "span 2";
+            document.body.appendChild(jump);
+            document.body.appendChild(buttonUtil.stepForward(webSocket));
+        }
+
+        var rawAngles = [];
+        var normAngles = [];
+        var normAxis = 0;
+
         window.addEventListener("deviceorientation", handleOrientation);
         function handleOrientation(event){
-            // updateFieldIfNotNull('Orientation_a', event.alpha);
+            updateFieldIfNotNull(event.alpha);
         }
-        function handleMotion(event){
-            // updateFieldIfNotNull('Accelerometer_z', event.acceleration.z);
-        }
-        function updateFieldIfNotNull(fieldName, value, precision=1){
-            if (value != null)
-            document.getElementById(fieldName).innerHTML = value.toFixed(precision);
-            webSocket.send(value.toFixed(precision));
-        }
-        var timer;
-        document.getElementById('punch').addEventListener('touchstart', function() {webSocket.send(0);});
-        document.getElementById('kick').addEventListener('touchstart', function() {webSocket.send(1);});
-        document.getElementById('step forward').addEventListener('pointerdown', function() {
-            timer=setInterval(function(){
-                webSocket.send("sf");
-            }, 1)
-        });
-        document.getElementById('step forward').addEventListener('pointerup', function() {if(timer) clearInterval(timer);});
-        document.getElementById('grab').addEventListener('touchstart', function() {webSocket.send(3);});
-        
+        function updateFieldIfNotNull(value, precision=0){
+            if (value != null){
+                if(value > 180){ 
+                    value -= 360; 
+                }
+                value = value.toFixed(precision);
+                rawAngles.push(value);
+                while(normAngles.length < 50){
+                    normAngles.push(value);
+                }
+                if(rawAngles.length > 100){
+                    normAngles.push(rawAngles[rawAngles.length - 1]);
+                    normAngles.shift();
+                    rawAngles = [];
+                }
+                normAngles.forEach((elem) => normAxis = +normAxis + +elem);
+                normAxis = (+normAxis / normAngles.length).toFixed(precision);   
+                webSocket.send("a: " + (+value - +normAxis));
+                normAxis = 0;
+            }
+        }    
     </script>
     </body>
 </html>

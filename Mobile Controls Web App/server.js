@@ -6,10 +6,11 @@ const express = require('express');
 
 var ips = new Map();
 var players = 0;
+var level = 2;
 const maxPlayers = 2;
 const controls = new Map([
-    [1, "player1demo"],
-    [2, "player2demo"]
+    [1, "player1"],
+    [2, "player2"]
 ]);
 
 var privateKey  = fs.readFileSync('key.pem', 'utf8');
@@ -44,7 +45,13 @@ wss.on('connection', function connection(ws) {
    wss.clients.forEach(client => {
      console.log(`distributing message: ${data}`)
      client.send(`${data}`)
-   })
+   });
+   if(data == "lvl1"){
+    level = 1;
+   }
+   else if(data == "lvl2"){
+    level = 2;
+   }
  })
 });
 
@@ -68,7 +75,7 @@ app.get('/play', function (req, res) {
         }
     }
     if(players <= maxPlayers){
-      res.render(String(controls.get(ips.get(ip))));
+      res.render(String(controls.get(ips.get(ip))), {level: level});
     }
     console.log(ip);
     console.log(ips);
