@@ -31,7 +31,7 @@ public class _Enemy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Behaviour();    // contains the unique behavior of each individual enemy
     }
@@ -61,6 +61,11 @@ public class _Enemy : MonoBehaviour
         {
             TakeDamage(1);
         }
+    }
+
+    public virtual void BulletCollision(int strength)
+    {
+        TakeDamage(strength);
     }
 
     public virtual void TakeDamage(int damageTaken)
