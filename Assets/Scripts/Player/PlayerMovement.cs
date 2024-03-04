@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     private bool setTimerConflict = false;
     private float respond;
     public float duration = 2f;
+    public TextMeshProUGUI shootTimerText;
 
     public PlayerInputsUI playerInputsUI;       // script that effects the UI button display
 
@@ -308,8 +310,10 @@ public class PlayerMovement : MonoBehaviour
         float xOffset = Mathf.Cos(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         float yOffset = Mathf.Sin(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         Instantiate(bullet, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
+        shootTimerText.text = ("1");
         yield return new WaitForSeconds(1f);
         shooting = false;
+        shootTimerText.text = ("0");
     }
 
     IEnumerator Kick()
