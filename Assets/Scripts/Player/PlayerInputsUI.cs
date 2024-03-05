@@ -1,24 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerInputsUI : MonoBehaviour
 {
     public Transform uiTransform;
     public Animator uiAnimator;
 
-    [Header("P1 Inputs")]
-    public Animator punchAnimator;
-    public Animator stepForwardAnimator;
-    public Animator p1JumpAnimator;
-    public GameObject p1JumpText;
+    float shootTimer;
+    GameObject shootTimerGO;
+    Slider shootTimerSlider;
 
-    [Header("P1 Inputs")]
-    public Animator shootAnimator;
-    public Animator kickAnimator;
-    public Animator stepBackwardAnimator;
-    public Animator p2JumpAnimator;
-    public GameObject p2JumpText;
+    Animator punchAnimator;
+    Animator stepForwardAnimator;
+    Animator p1JumpAnimator;
+    GameObject p1JumpText;
+
+    Animator shootAnimator;
+    Animator kickAnimator;
+    Animator stepBackwardAnimator;
+    Animator p2JumpAnimator;
+    GameObject p2JumpText;
 
     [Space(10)]
     public bool jumpCheck1;
@@ -29,16 +32,32 @@ public class PlayerInputsUI : MonoBehaviour
     {
         uiAnimator = uiTransform.gameObject.GetComponent<Animator>();
 
-        punchAnimator = uiTransform.GetChild(1).GetChild(0).gameObject.GetComponent<Animator>();
-        stepForwardAnimator = uiTransform.GetChild(1).GetChild(1).gameObject.GetComponent<Animator>();
-        p1JumpAnimator = uiTransform.GetChild(1).GetChild(2).gameObject.GetComponent<Animator>();
-        p1JumpText = uiTransform.GetChild(1).GetChild(3).gameObject;
+        shootTimerGO = uiTransform.GetChild(1).gameObject;
+        shootTimerSlider = shootTimerGO.GetComponent<Slider>();
 
-        shootAnimator = uiTransform.GetChild(2).GetChild(0).gameObject.GetComponent<Animator>();
-        kickAnimator = uiTransform.GetChild(2).GetChild(1).gameObject.GetComponent<Animator>();
-        stepBackwardAnimator = uiTransform.GetChild(2).GetChild(2).gameObject.GetComponent<Animator>();
-        p2JumpAnimator = uiTransform.GetChild(2).GetChild(3).gameObject.GetComponent<Animator>();
-        p2JumpText = uiTransform.GetChild(2).GetChild(4).gameObject;
+        punchAnimator = uiTransform.GetChild(2).GetChild(0).gameObject.GetComponent<Animator>();
+        stepForwardAnimator = uiTransform.GetChild(2).GetChild(1).gameObject.GetComponent<Animator>();
+        p1JumpAnimator = uiTransform.GetChild(2).GetChild(2).gameObject.GetComponent<Animator>();
+        p1JumpText = uiTransform.GetChild(2).GetChild(3).gameObject;
+
+        shootAnimator = uiTransform.GetChild(3).GetChild(0).gameObject.GetComponent<Animator>();
+        kickAnimator = uiTransform.GetChild(3).GetChild(1).gameObject.GetComponent<Animator>();
+        stepBackwardAnimator = uiTransform.GetChild(3).GetChild(2).gameObject.GetComponent<Animator>();
+        p2JumpAnimator = uiTransform.GetChild(3).GetChild(3).gameObject.GetComponent<Animator>();
+        p2JumpText = uiTransform.GetChild(3).GetChild(4).gameObject;
+    }
+
+    void Update()
+    {
+        if (shootTimer > 0f)
+        {
+            shootTimer -= Time.deltaTime;
+            shootTimerSlider.value = shootTimer;
+            if (shootTimer <= 0f)
+            {
+                shootTimerGO.SetActive(false);
+            }
+        }
     }
 
     public void Conflict()
@@ -98,7 +117,12 @@ public class PlayerInputsUI : MonoBehaviour
     {
         jumpCheck1 = true;
         jumpCheck2 = true;
+    }
 
-
+    public void ShootTimer()
+    {
+        shootTimer = 1f;
+        shootTimerGO.SetActive(true);
+        shootTimerSlider.value = 1f;
     }
 }

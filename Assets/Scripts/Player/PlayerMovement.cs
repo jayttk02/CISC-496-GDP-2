@@ -311,6 +311,7 @@ public class PlayerMovement : MonoBehaviour
         float yOffset = Mathf.Sin(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         Instantiate(bullet, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
         shootTimerText.text = ("1");
+        playerInputsUI.ShootTimer();
         yield return new WaitForSeconds(1f);
         shooting = false;
         shootTimerText.text = ("0");
