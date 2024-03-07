@@ -25,17 +25,21 @@ public class PlayerMovement : MonoBehaviour
     bool shooting = false;
     bool kicking = false;
     bool punching = false;
+    bool grabbing = false;
+
 
     //Timer
     private float jumpCheckTimer;
     private float grabCheckTimer;
     private float conflictCheckTimer;
     private bool setTimerGrab = false;
+    private bool setTimerGrab2 = false;
     private bool setTimerJump = false;
     private bool setTimerJump2 = false;
     private bool setTimerConflict = false;
     private float respond;
     public float duration = 2f;
+    float grabDuration = 0.5f;
 
     public PlayerInputsUI playerInputsUI;       // script that effects the UI button display
 
@@ -102,8 +106,7 @@ public class PlayerMovement : MonoBehaviour
         playerInputsUI.ButtonHold("P2 Jump", Input.GetKey(KeyCode.C));      // player input ui checks if player 2's jump is held down
 
         //Check if Grab was hit by both with small delay using N and M as temp
-        grabCheckTimer = 0;
-        if (Input.GetKey(KeyCode.N))
+        if (Input.GetKey(KeyCode.N) && !setTimerGrab2)
         {
             if (!setTimerGrab) 
             {
@@ -113,14 +116,37 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.M))
             {
                 respond = Time.time;
-                if ((respond - grabCheckTimer) > 0 && (respond - grabCheckTimer) < duration && isGrounded) {
+                if ((respond - grabCheckTimer) > 0 && (respond - grabCheckTimer) < duration) {
+                    grabbing = true;
                     //grab ledge
                 }
             }
         }
+        if (Input.GetKey(KeyCode.M) && !setTimerGrab)
+        {
+            if (!setTimerGrab2) 
+            {
+                grabCheckTimer = Time.time;
+                setTimerGrab2 = true;
+            }
+            if (Input.GetKey(KeyCode.N))
+            {
+                respond = Time.time;
+                if ((respond - grabCheckTimer) > 0 && (respond - grabCheckTimer) < duration) {
+                    grabbing = true;
+                    //grab ledge
+                }
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.M))
+        {
+            setTimerGrab2 = false;
+            grabbing = false;
+        }
         if (Input.GetKeyUp(KeyCode.N))
         {
             setTimerGrab = false;
+            grabbing = false;
         }
 
     }
@@ -379,5 +405,8 @@ public class PlayerMovement : MonoBehaviour
 
     public bool ispunching() {
         return punching;
+    }
+    public bool isgrabbing() {
+        return grabbing;
     }
 }

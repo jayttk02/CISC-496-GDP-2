@@ -10,7 +10,6 @@ public class Follow : MonoBehaviour
     public float yOffset;
     void Start()
     {
-        
     }
 
     // Update is called once per frame
