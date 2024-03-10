@@ -49,7 +49,6 @@ public class MainMenu : MonoBehaviour
         wss.Connect();
         wss.OnMessage += (sender, e) =>
         {
-            Debug.Log(e.Data);
             if (e.Data.Substring(0, 9) == "players: ")
             {
                 numberOfPlayers = int.Parse(e.Data.Substring(9), System.Globalization.CultureInfo.InvariantCulture);
@@ -61,7 +60,6 @@ public class MainMenu : MonoBehaviour
     IEnumerator CheckForPlayers()
     {
         wss.Send("want # players");
-        Debug.Log("check for players");
         yield return new WaitForSeconds(3);
         StartCoroutine(CheckForPlayers());
     }

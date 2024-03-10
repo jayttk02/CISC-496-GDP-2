@@ -362,7 +362,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            activateKick = Input.GetKey(KeyCode.E) && !kicking;
+            activateKick = Input.GetKey(KeyCode.T) && !kicking;
         }
         if(activateKick)
         {
