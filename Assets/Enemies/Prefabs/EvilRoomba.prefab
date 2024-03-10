@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyName: 
-  health: 3
+  health: 1
   speed: 0
   _animator: {fileID: 0}
   _rigidbody: {fileID: 0}
