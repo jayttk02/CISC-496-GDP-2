@@ -8,10 +8,15 @@ public class BulletHitbox : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
+        print(col.tag);
         if (col.tag == "Enemy")
         {
-            col.GetComponent<_Enemy>().TakeDamage(1);
+            col.GetComponent<_Enemy>().BulletCollision(1);
             Destroy(this.gameObject);
+        }
+        else if (col.tag == "Radius")
+        {
+            //col.transform.parent.GetComponent<_Enemy>().BulletCollision(1);
         }
     }
 

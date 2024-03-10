@@ -5,6 +5,7 @@ using UnityEngine;
 public class _Enemy : MonoBehaviour
 {
     [Header("Stats")]
+    public string enemyName;
     [Tooltip("The amount of health the enemy currently has. At 0 or lower, it will be deleted.")] public int health;
 
     [Space(10)]
@@ -30,7 +31,7 @@ public class _Enemy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Behaviour();    // contains the unique behavior of each individual enemy
     }
@@ -46,13 +47,52 @@ public class _Enemy : MonoBehaviour
         return Physics2D.Linecast(transform.position, groundCheck.position, groundLayer);
     }
 
-    public void TakeDamage(int damageTaken)
+    public virtual void OnCollisionTrigger2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            TakeDamage(1);
+        }
+    }
+
+    public virtual void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            TakeDamage(1);
+        }
+    }
+
+    public virtual void BulletCollision(int strength)
+    {
+        TakeDamage(strength);
+    }
+
+    public virtual void TakeDamage(int damageTaken)
     {
         health -= damageTaken;  // subtracts the current health value by the parameter
         if (health <= 0)
         {
-            Instantiate(deathEffect, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);     // spawn death effect when health < 0
-            Destroy(this.gameObject);   // destroys gameobject
+            Death();
         }
+        else
+        {
+            StartCoroutine(DamageFlash());
+        }
+    }
+
+    IEnumerator DamageFlash()
+    {
+        this.gameObject.GetComponent<SpriteRenderer>().color = new Color(0.4901961f, 0.4901961f, 0.4901961f);
+
+        yield return new WaitForSeconds(0.05f);
+
+        this.gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f);
+    }
+
+    public virtual void Death()
+    {
+        Instantiate(deathEffect, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);     // spawn death effect when health < 0
+        Destroy(this.gameObject);   // destroys gameobject
     }
 }

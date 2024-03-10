@@ -9,6 +9,9 @@ public class PlayerMovement : MonoBehaviour
 {
     public string ip;
     public bool mobileControls;
+    public bool canMove;        // set to false if player is not supposed to be allowed to move (boss intros, etc.)
+
+    [Space(10)]
     private float startSpeed;
     public float moveSpeed = 5f;
     public float aimSpeed = 5f;
@@ -24,20 +27,17 @@ public class PlayerMovement : MonoBehaviour
     public float armOffset = 0.75f;
     public GameObject bullet;
     public float jumpDuration = 1f;
-    private bool shooting;
-    private bool kicking;
-    private bool punching;
+    bool shooting = false;
+    bool kicking = false;
+    bool punching = false;
+    bool grabbing = false;
+
 
     //Timer
     private float jumpCheckTimer;
     private float grabCheckTimer;
     private float conflictCheckTimer;
-    private bool setTimerGrab;
-    private bool setTimerJump;
-    private bool setTimerJump2;
-    private bool setTimerConflict;
-    private float respond;
-    public float duration = 2f;
+
     
     private WebSocket wss;
     private IDictionary<string, bool> socketMap = new Dictionary<string,bool>
@@ -50,6 +50,16 @@ public class PlayerMovement : MonoBehaviour
         ["s"] = false,
         ["k"] = false,
     };
+    private bool setTimerGrab = false;
+    private bool setTimerGrab2 = false;
+    private bool setTimerJump = false;
+    private bool setTimerJump2 = false;
+    private bool setTimerConflict = false;
+    private float respond;
+    public float duration = 2f;
+    float grabDuration = 0.5f;
+
+    public PlayerInputsUI playerInputsUI;       // script that effects the UI button display
 
     public float aimAngle;
     
@@ -72,14 +82,20 @@ public class PlayerMovement : MonoBehaviour
         };
         
         startSpeed = moveSpeed;
+        canMove = true;     // canMove value starts true
     }
+
     // Update is called once per frame
     void Update()
     {
+        if (!canMove)       // if canMove is false, no other inputs go through
+        {
+            movement = new Vector2(0, 0);
+            return;
+        }
+
         ProcessInputs();
 
-        bool activateJump1;
-        bool activateJump2;
         //Check if Jump was hit by both with small delay using V and C as temp
         if (mobileControls)
         {
@@ -96,12 +112,19 @@ public class PlayerMovement : MonoBehaviour
                 jumpCheckTimer = Time.time;
                 setTimerJump = true;
             }
-            // if (Input.GetKey(KeyCode.C))
-            if(socketMap["2j"])
+            bool player2Jump;
+            if(mobileControls){
+                player2Jump = socketMap["2j"];
+            }
+            else{
+                player2Jump = Input.GetKey(KeyCode.C);
+            }
+            if(player2Jump)
             {
                 respond = Time.time;
                 if ((respond - jumpCheckTimer) >= 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
                     StartCoroutine(Jump());
+                    playerInputsUI.JumpUpdate();
                 }
                 socketMap["1j"] = false;
                 socketMap["2j"] = false;
@@ -122,17 +145,29 @@ public class PlayerMovement : MonoBehaviour
                 jumpCheckTimer = Time.time;
                 setTimerJump2 = true;
             }
-            // if (Input.GetKey(KeyCode.V))
-            if(socketMap["1j"])
+            bool player1Jump;
+            if(mobileControls){
+                player1Jump = socketMap["1j"];
+            }
+            else{
+                player1Jump = Input.GetKey(KeyCode.V);
+            }
+            if(player1Jump)
             {
                 respond = Time.time;
                 if ((respond - jumpCheckTimer) >= 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
                     StartCoroutine(Jump());
+                    playerInputsUI.JumpUpdate();
                 }
                 socketMap["1j"] = false;
                 socketMap["2j"] = false;
             }
         }
+
+        
+        playerInputsUI.ButtonHold("P1 Jump", Input.GetKey(KeyCode.V));      // player input ui checks if player 1's jump is held down
+        playerInputsUI.ButtonHold("P2 Jump", Input.GetKey(KeyCode.C));      // player input ui checks if player 2's jump is held down
+
 
         if (mobileControls)
         {
@@ -158,28 +193,31 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // NOTE: GRAB NOT IMPLEMENTED YET
-        if (!mobileControls)
-        {
+        if (!mobileControls){
             //Check if Grab was hit by both with small delay using N and M as temp
-            grabCheckTimer = 0;
-            if (Input.GetKey(KeyCode.N))
+            if (Input.GetKey(KeyCode.N) && !setTimerGrab2)
             {
-                if (!setTimerGrab) 
+                //Check if Grab was hit by both with small delay using N and M as temp
+                grabCheckTimer = 0;
+                if (Input.GetKey(KeyCode.N))
                 {
-                    grabCheckTimer = Time.time;
-                    setTimerGrab = true;
-                }
-                if (Input.GetKey(KeyCode.M))
-                {
-                    respond = Time.time;
-                    if ((respond - grabCheckTimer) >= 0 && (respond - grabCheckTimer) < duration && isGrounded) {
-                        //grab ledge
+                    if (!setTimerGrab) 
+                    {
+                        grabCheckTimer = Time.time;
+                        setTimerGrab = true;
+                    }
+                    if (Input.GetKey(KeyCode.M))
+                    {
+                        respond = Time.time;
+                        if ((respond - grabCheckTimer) >= 0 && (respond - grabCheckTimer) < duration && isGrounded) {
+                            //grab ledge
+                        }
                     }
                 }
-            }
-            if (Input.GetKeyUp(KeyCode.N))
-            {
-                setTimerGrab = false;
+                if (Input.GetKeyUp(KeyCode.N))
+                {
+                    setTimerGrab = false;
+                }
             }
         }
     }
@@ -255,7 +293,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 conflictCheckTimer = Time.time;
                 setTimerConflict = true;
-            } else if ((Time.time - conflictCheckTimer) > duration) {
+                playerInputsUI.Conflict();  // triggers the player input ui to shake, indicating a conflict is occuring
+            } 
+            else if ((Time.time - conflictCheckTimer) > duration) {
                 Debug.Log("Conflict");
             }
         }
@@ -274,6 +314,9 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         
+        playerInputsUI.ButtonHold("Step Forward", Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D));      // player input ui checks if step forward is held down
+        playerInputsUI.ButtonHold("Step Backward", Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A));    // player input ui checks if step backward is held down
+
         //Player 1
 
         //Punch
@@ -301,7 +344,8 @@ public class PlayerMovement : MonoBehaviour
             }
             */
         }
-        
+        playerInputsUI.ButtonHold("Punch", Input.GetKey(KeyCode.Q));    // player input ui checks if punch is held down
+
         //Kick
         bool activateKick;
         if (mobileControls)
@@ -327,6 +371,7 @@ public class PlayerMovement : MonoBehaviour
             }
             */
         }
+        playerInputsUI.ButtonHold("Kick", Input.GetKey(KeyCode.E));     // player input ui checks if kick is held down
 
         //Player 2
         //Shoot
@@ -355,55 +400,44 @@ public class PlayerMovement : MonoBehaviour
 
             */
         }
+        playerInputsUI.ButtonHold("Shoot", Input.GetKey(KeyCode.E));    // player input ui checks if shoot is held down
+
         //Stomp
         // NOTE: NOT IMPLEMENTED YET
-        bool activateStomp = false;
-        if (mobileControls)
+        if (!mobileControls)
         {
-            // activateStomp = socketMap["stomp"];
-        }
-        else
-        {
-            activateStomp = Input.GetKey(KeyCode.Keypad1);
-        }
-        if(activateStomp)
-        {
-            Debug.Log("Stomp");
-            /*Do damage to close enemies in range
-            Animation here
-            if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isStompable)
+            if(Input.GetKey(KeyCode.Keypad1))
             {
-                Stomp does damage  
-                Sound effect play
-                Visual indicator damage done
+                Debug.Log("Stomp");
+                /*Do damage to close enemies in range
+                Animation here
+                if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isStompable)
+                {
+                    Stomp does damage  
+                    Sound effect play
+                    Visual indicator damage done
+                }
+                */
             }
-            */
-        }
-        //Shield - Should it be held? Able to move while held? Should buttons only be one at a time?
-        // NOTE: NOT IMPLEMENTED YET
-        bool activateShield = false;
-        if (mobileControls)
-        {
-            // activateShield = socketMap["shield"];
-        }
-        else
-        {
-            activateShield = Input.GetKeyDown(KeyCode.Keypad2);
-        }
-        if(activateShield)
-        {
-            Debug.Log("Shield");
-            /*Do damage to close enemies in range
-            Animation here
-            if (Vector2.Distance(transform.position, enemyAtk) < 0.5f)
-            {
-                Shield block damage  
-                Sound effect play
-                Visual indicator damage blocked
-            }
-            */
         }
 
+        //Shield - Should it be held? Able to move while held? Should buttons only be one at a time?
+        // NOTE: NOT IMPLEMENTED YET
+        if (!mobileControls){
+            if(Input.GetKeyDown(KeyCode.Keypad2))
+            {
+                Debug.Log("Shield");
+                /*Do damage to close enemies in range
+                Animation here
+                if (Vector2.Distance(transform.position, enemyAtk) < 0.5f)
+                {
+                    Shield block damage  
+                    Sound effect play
+                    Visual indicator damage blocked
+                }
+                */
+            }
+        }
     }
 
     void Move()
@@ -429,7 +463,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (movement.x < 0)
         {
-            Debug.Log(leg.transform.eulerAngles.z);
+            //Debug.Log(leg.transform.eulerAngles.z);
             if (!kicking) {
                 leg.GetComponent<Follow>().xOffset = -legOffset;
             } else {
@@ -487,7 +521,10 @@ public class PlayerMovement : MonoBehaviour
             leg.transform.Rotate (new Vector3 (0, 0, -30));
             leg.GetComponent<Follow>().xOffset -= 0.5f;
         }
-        yield return new WaitForSeconds(0.5f);
+        leg.GetComponent<BoxCollider2D>().enabled = true;
+        yield return new WaitForSeconds(0.01f);
+        leg.GetComponent<BoxCollider2D>().enabled = false;
+        yield return new WaitForSeconds(0.49f);
         if (leg.GetComponent<Follow>().xOffset > 0) 
         {
             leg.transform.Rotate (new Vector3 (0, 0, -30));
@@ -502,7 +539,7 @@ public class PlayerMovement : MonoBehaviour
         socketMap["k"] = false;
     }
 
-IEnumerator Punch()
+    IEnumerator Punch()
     {
         if(arm.GetComponent<Follow>().xOffset > 0) 
         {
@@ -512,7 +549,10 @@ IEnumerator Punch()
         {
             arm.GetComponent<Follow>().xOffset -= 0.5f;
         }
-        yield return new WaitForSeconds(0.5f);
+        arm.GetComponent<BoxCollider2D>().enabled = true;
+        yield return new WaitForSeconds(0.01f);
+        arm.GetComponent<BoxCollider2D>().enabled = false;
+        yield return new WaitForSeconds(0.49f);
         if (arm.GetComponent<Follow>().xOffset > 0) 
         {
             arm.GetComponent<Follow>().xOffset -= 0.5f;
@@ -530,5 +570,16 @@ IEnumerator Punch()
         GetComponent<Rigidbody2D>().gravityScale = -17;
         yield return new WaitForSeconds(jumpDuration);
         GetComponent<Rigidbody2D>().gravityScale = 20;
+    }
+
+    public bool iskicking() {
+        return kicking;
+    }
+
+    public bool ispunching() {
+        return punching;
+    }
+    public bool isgrabbing() {
+        return grabbing;
     }
 }

@@ -9,6 +9,7 @@ TagManager:
   - Projectile
   - Ground
   - Spike
+  - Radius
   layers:
   - Default
   - TransparentFX
@@ -45,4 +46,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UI
+    uniqueID: 967450295
     locked: 0

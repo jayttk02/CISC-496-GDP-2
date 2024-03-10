@@ -10,7 +10,6 @@ public class Follow : MonoBehaviour
     public float yOffset;
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -18,4 +17,5 @@ public class Follow : MonoBehaviour
     {
         transform.position = new Vector3(following.transform.position.x + xOffset, following.transform.position.y + yOffset, following.transform.position.z);
     }
+
 }
