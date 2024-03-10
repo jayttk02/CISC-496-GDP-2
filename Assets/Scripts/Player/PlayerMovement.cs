@@ -106,6 +106,7 @@ public class PlayerMovement : MonoBehaviour
         if (mobileControls)
         {
             activateJump1 = socketMap["1j"] && !setTimerJump2;
+            
         }
         else
         {
@@ -172,9 +173,16 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        
-        playerInputsUI.ButtonHold("P1 Jump", Input.GetKey(KeyCode.V));      // player input ui checks if player 1's jump is held down
-        playerInputsUI.ButtonHold("P2 Jump", Input.GetKey(KeyCode.C));      // player input ui checks if player 2's jump is held down
+        if (mobileControls)
+        {
+            playerInputsUI.ButtonHold("P1 Jump", socketMap["1j"]);      // player input ui checks if player 1's jump is held down
+            playerInputsUI.ButtonHold("P2 Jump", socketMap["2j"]);      // player input ui checks if player 2's jump is held down
+        }
+        else
+        {
+            playerInputsUI.ButtonHold("P1 Jump", Input.GetKey(KeyCode.V));      // player input ui checks if player 1's jump is held down
+            playerInputsUI.ButtonHold("P2 Jump", Input.GetKey(KeyCode.C));      // player input ui checks if player 2's jump is held down
+        }
 
 
         if (mobileControls)
@@ -322,8 +330,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         
-        playerInputsUI.ButtonHold("Step Forward", Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D));      // player input ui checks if step forward is held down
-        playerInputsUI.ButtonHold("Step Backward", Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A));    // player input ui checks if step backward is held down
+        playerInputsUI.ButtonHold("Step Forward",movement.x > 0);      // player input ui checks if step forward is held down
+        playerInputsUI.ButtonHold("Step Backward", movement.x < 0);    // player input ui checks if step backward is held down
 
         //Player 1
 
@@ -352,7 +360,7 @@ public class PlayerMovement : MonoBehaviour
             }
             */
         }
-        playerInputsUI.ButtonHold("Punch", Input.GetKey(KeyCode.Q));    // player input ui checks if punch is held down
+        playerInputsUI.ButtonHold("Punch", activatePunch);    // player input ui checks if punch is held down
 
         //Kick
         bool activateKick;
@@ -379,7 +387,7 @@ public class PlayerMovement : MonoBehaviour
             }
             */
         }
-        playerInputsUI.ButtonHold("Kick", Input.GetKey(KeyCode.T));     // player input ui checks if kick is held down
+        playerInputsUI.ButtonHold("Kick", activateKick);     // player input ui checks if kick is held down
 
         //Player 2
         //Shoot
@@ -408,7 +416,7 @@ public class PlayerMovement : MonoBehaviour
 
             */
         }
-        playerInputsUI.ButtonHold("Shoot", Input.GetKey(KeyCode.E));    // player input ui checks if shoot is held down
+        playerInputsUI.ButtonHold("Shoot", activateShoot);    // player input ui checks if shoot is held down
 
         //Stomp
         // NOTE: NOT IMPLEMENTED YET
