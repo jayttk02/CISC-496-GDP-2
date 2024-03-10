@@ -37,7 +37,6 @@ public class MainMenu : MonoBehaviour
 
         MainMenuOpen(true);
         StageSelectOpen(false);
-        //UpdatePlayerNumber(1);
     }
 
     public void UpdatePlayerNumber(int add = 0)

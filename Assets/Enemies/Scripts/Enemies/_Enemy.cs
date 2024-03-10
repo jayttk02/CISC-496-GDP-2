@@ -73,7 +73,6 @@ public class _Enemy : MonoBehaviour
         {
             TakeDamage(strength);
         }
-
     }
 
     public virtual void BulletCollision(int strength)
@@ -97,6 +96,15 @@ public class _Enemy : MonoBehaviour
     IEnumerator DamageFlash()
     {
         this.gameObject.GetComponent<SpriteRenderer>().color = new Color(0.4901961f, 0.4901961f, 0.4901961f);
+
+        yield return new WaitForSeconds(0.05f);
+
+        this.gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f);
+    }
+
+    public IEnumerator NoDamageFlash()
+    {
+        this.gameObject.GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 1f);
 
         yield return new WaitForSeconds(0.05f);
 
