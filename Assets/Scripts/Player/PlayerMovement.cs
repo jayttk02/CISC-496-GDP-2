@@ -98,6 +98,8 @@ public class PlayerMovement : MonoBehaviour
 
         ProcessInputs();
 
+        bool activateJump1;
+
         //Check if Jump was hit by both with small delay using V and C as temp
         if (mobileControls)
         {
@@ -132,6 +134,8 @@ public class PlayerMovement : MonoBehaviour
                 socketMap["2j"] = false;
             }
         }
+
+        bool activateJump2;
         if (mobileControls)
         {
             activateJump2 = socketMap["2j"] && !setTimerJump;
