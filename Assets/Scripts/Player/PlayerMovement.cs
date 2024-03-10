@@ -67,22 +67,24 @@ public class PlayerMovement : MonoBehaviour
     
     void Start()
     {
-        wss = new WebSocket("wss://"+ ip + ":8443");
-        wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
-        wss.Connect();
-        wss.OnMessage += (sender, e) =>
+        if (mobileControls)
         {
-            // Debug.Log("Message Received from "+((WebSocket)sender).Url+", Data : "+e.Data);
-            if (socketMap.ContainsKey(e.Data))
+            wss = new WebSocket("wss://"+ ip + ":8443");
+            wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+            wss.Connect();
+            wss.OnMessage += (sender, e) =>
             {
-                socketMap[e.Data] = true;
-            }
-            else if(e.Data.Substring(0, 2) == "a:")
-            {
-                aimAngle = float.Parse(e.Data.Substring(2), System.Globalization.CultureInfo.InvariantCulture);
-            }
-        };
-        
+                // Debug.Log("Message Received from "+((WebSocket)sender).Url+", Data : "+e.Data);
+                if (socketMap.ContainsKey(e.Data))
+                {
+                    socketMap[e.Data] = true;
+                }
+                else if(e.Data.Substring(0, 2) == "a:")
+                {
+                    aimAngle = float.Parse(e.Data.Substring(2), System.Globalization.CultureInfo.InvariantCulture);
+                }
+            };
+        }
         startSpeed = moveSpeed;
         canMove = true;     // canMove value starts true
     }
@@ -377,7 +379,7 @@ public class PlayerMovement : MonoBehaviour
             }
             */
         }
-        playerInputsUI.ButtonHold("Kick", Input.GetKey(KeyCode.E));     // player input ui checks if kick is held down
+        playerInputsUI.ButtonHold("Kick", Input.GetKey(KeyCode.T));     // player input ui checks if kick is held down
 
         //Player 2
         //Shoot
