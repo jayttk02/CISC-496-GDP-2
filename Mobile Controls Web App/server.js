@@ -30,9 +30,10 @@ app.set('views', path.join(__dirname, 'views'));
 
 //pass in your express app and credentials to create an https server
 var httpsServer = https.createServer(credentials, app);
-httpsServer.listen(8443, "192.168.2.37");
+httpsServer.listen(8443, "10.216.112.17");
 
-var WebSocketServer = require('ws').Server;
+var WebSocket = require('ws');
+var WebSocketServer = WebSocket.Server;
 var wss = new WebSocketServer({
     server: httpsServer
   });
@@ -51,6 +52,12 @@ wss.on('connection', function connection(ws) {
    }
    else if(data == "lvl2"){
     level = 2;
+   }
+   else if(data == "want # players"){
+    wss.clients.forEach(client => {
+      console.log(`distributing message: players: ${players}`)
+      client.send(`players: ${players}`)
+    });
    }
  })
 });
@@ -77,6 +84,5 @@ app.get('/play', function (req, res) {
     if(players <= maxPlayers){
       res.render(String(controls.get(ips.get(ip))), {level: level});
     }
-    console.log(ip);
     console.log(ips);
   });
