@@ -8,6 +8,7 @@ using WebSocketSharp;
 public class PlayerMovement : MonoBehaviour
 {
     public string ip;
+    public bool mobileControls;
     private float startSpeed;
     public float moveSpeed = 5f;
     public float aimSpeed = 5f;
@@ -23,18 +24,18 @@ public class PlayerMovement : MonoBehaviour
     public float armOffset = 0.75f;
     public GameObject bullet;
     public float jumpDuration = 1f;
-    bool shooting = false;
-    bool kicking = false;
-    bool punching = false;
+    private bool shooting;
+    private bool kicking;
+    private bool punching;
 
     //Timer
     private float jumpCheckTimer;
     private float grabCheckTimer;
     private float conflictCheckTimer;
-    private bool setTimerGrab = false;
-    private bool setTimerJump = false;
-    private bool setTimerJump2 = false;
-    private bool setTimerConflict = false;
+    private bool setTimerGrab;
+    private bool setTimerJump;
+    private bool setTimerJump2;
+    private bool setTimerConflict;
     private float respond;
     public float duration = 2f;
     
@@ -67,7 +68,6 @@ public class PlayerMovement : MonoBehaviour
             else if(e.Data.Substring(0, 2) == "a:")
             {
                 aimAngle = float.Parse(e.Data.Substring(2), System.Globalization.CultureInfo.InvariantCulture);
-                // Debug.Log(aimAngle);
             }
         };
         
@@ -78,9 +78,18 @@ public class PlayerMovement : MonoBehaviour
     {
         ProcessInputs();
 
+        bool activateJump1;
+        bool activateJump2;
         //Check if Jump was hit by both with small delay using V and C as temp
-        // if (Input.GetKey(KeyCode.V) && !setTimerJump2)
-        if(socketMap["1j"] && !setTimerJump2)
+        if (mobileControls)
+        {
+            activateJump1 = socketMap["1j"] && !setTimerJump2;
+        }
+        else
+        {
+            activateJump1 = Input.GetKey(KeyCode.V) && !setTimerJump2;
+        }
+        if(activateJump1)
         {
             if (!setTimerJump) 
             {
@@ -98,8 +107,15 @@ public class PlayerMovement : MonoBehaviour
                 socketMap["2j"] = false;
             }
         }
-        // if (Input.GetKey(KeyCode.C) && !setTimerJump)
-        if(socketMap["2j"] && !setTimerJump)
+        if (mobileControls)
+        {
+            activateJump2 = socketMap["2j"] && !setTimerJump;
+        }
+        else
+        {
+            activateJump2 = Input.GetKey(KeyCode.C) && !setTimerJump;
+        }
+        if(activateJump2)
         {
             if (!setTimerJump2) 
             {
@@ -117,39 +133,55 @@ public class PlayerMovement : MonoBehaviour
                 socketMap["2j"] = false;
             }
         }
-        // if (Input.GetKeyUp(KeyCode.V))
-        if(!socketMap["1j"])
+
+        if (mobileControls)
         {
-            setTimerJump = false;
+            if(!socketMap["1j"])
+            {
+                setTimerJump = false;
+            }
+            if(!socketMap["2j"])
+            {
+                setTimerJump2 = false;
+            }
         }
-        // if (Input.GetKeyUp(KeyCode.C))
-        if(!socketMap["2j"])
+        else
         {
-            setTimerJump2 = false;
+            if (Input.GetKeyUp(KeyCode.V))
+            {
+                setTimerJump = false;
+            }
+            if (Input.GetKeyUp(KeyCode.C))
+            {
+                setTimerJump2 = false;
+            }
         }
 
-        //Check if Grab was hit by both with small delay using N and M as temp
-        grabCheckTimer = 0;
-        if (Input.GetKey(KeyCode.N))
+        // NOTE: GRAB NOT IMPLEMENTED YET
+        if (!mobileControls)
         {
-            if (!setTimerGrab) 
+            //Check if Grab was hit by both with small delay using N and M as temp
+            grabCheckTimer = 0;
+            if (Input.GetKey(KeyCode.N))
             {
-                grabCheckTimer = Time.time;
-                setTimerGrab = true;
-            }
-            if (Input.GetKey(KeyCode.M))
-            {
-                respond = Time.time;
-                if ((respond - grabCheckTimer) >= 0 && (respond - grabCheckTimer) < duration && isGrounded) {
-                    //grab ledge
+                if (!setTimerGrab) 
+                {
+                    grabCheckTimer = Time.time;
+                    setTimerGrab = true;
+                }
+                if (Input.GetKey(KeyCode.M))
+                {
+                    respond = Time.time;
+                    if ((respond - grabCheckTimer) >= 0 && (respond - grabCheckTimer) < duration && isGrounded) {
+                        //grab ledge
+                    }
                 }
             }
+            if (Input.GetKeyUp(KeyCode.N))
+            {
+                setTimerGrab = false;
+            }
         }
-        if (Input.GetKeyUp(KeyCode.N))
-        {
-            setTimerGrab = false;
-        }
-
     }
 
     void FixedUpdate()
@@ -181,27 +213,44 @@ public class PlayerMovement : MonoBehaviour
     void ProcessInputs()
     {
         //X and Y axis movement arrow or wasd works
-        // movement.x = Input.GetAxisRaw("Horizontal");
-        if (socketMap["sf"])
+        //or websocket data from mobile
+
+        if (mobileControls)
         {
-            movement.x = 1;
-            socketMap["sf"] = false;
+            if (socketMap["sf"])
+            {
+                movement.x = 1;
+                socketMap["sf"] = false;
+            }
+            else if (socketMap["sb"])
+            {
+                movement.x = -1;
+                socketMap["sb"] = false;
+            }
+            else if(movement.x != 0)
+            {
+                StartCoroutine(Smooth());
+            }
         }
-        else if (socketMap["sb"])
+        else
         {
-            movement.x = -1;
-            socketMap["sb"] = false;
+            movement.x = Input.GetAxisRaw("Horizontal");
         }
-        else if(movement.x != 0)
-        {
-            StartCoroutine(Smooth());
-        }
-        
 
         //movement.y = Input.GetAxisRaw("Vertical");
         // TODO: update w/ mobile controls
         conflictCheckTimer = 0;
-        if ((Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))) {
+        bool activateConflict;
+
+        if (mobileControls)
+        {
+            activateConflict = socketMap["sf"] && socketMap["sb"];
+        }
+        else
+        {
+            activateConflict = (Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow)) || (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D));
+        }
+        if (activateConflict) {
             if (!setTimerConflict) 
             {
                 conflictCheckTimer = Time.time;
@@ -210,16 +259,34 @@ public class PlayerMovement : MonoBehaviour
                 Debug.Log("Conflict");
             }
         }
-        if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+        if (mobileControls)
         {
-            setTimerConflict = false;
+            if (!socketMap["sf"] || !socketMap["sb"])
+            {
+                setTimerConflict = false;
+            }
         }
-
+        else
+        {
+            if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+            {
+                setTimerConflict = false;
+            }
+        }
+        
         //Player 1
 
         //Punch
-        // if (Input.GetKey(KeyCode.Q) && !punching)
-        if(socketMap["p"] && !punching)
+        bool activatePunch;
+        if (mobileControls)
+        {
+            activatePunch = socketMap["p"] && !punching;
+        }
+        else
+        {
+            activatePunch = Input.GetKey(KeyCode.Q) && !punching;
+        }
+        if(activatePunch)
         {
             Debug.Log("Punch");
             punching = true;
@@ -236,8 +303,16 @@ public class PlayerMovement : MonoBehaviour
         }
         
         //Kick
-        // if (Input.GetKey(KeyCode.E) && !kicking)
-        if(socketMap["k"] && !kicking)
+        bool activateKick;
+        if (mobileControls)
+        {
+            activateKick = socketMap["k"] && !kicking;
+        }
+        else
+        {
+            activateKick = Input.GetKey(KeyCode.E) && !kicking;
+        }
+        if(activateKick)
         {
             Debug.Log("Kick");
             kicking = true;
@@ -255,8 +330,16 @@ public class PlayerMovement : MonoBehaviour
 
         //Player 2
         //Shoot
-        // if (Input.GetKey(KeyCode.E) && !shooting)
-        if(socketMap["s"] && !shooting)
+        bool activateShoot;
+        if (mobileControls)
+        {
+            activateShoot = socketMap["s"] && !shooting;
+        }
+        else
+        {
+            activateShoot = Input.GetKey(KeyCode.E) && !shooting;
+        }
+        if(activateShoot)
         {
             Debug.Log("Shoot");
             shooting = true;
@@ -273,7 +356,17 @@ public class PlayerMovement : MonoBehaviour
             */
         }
         //Stomp
-        if (Input.GetKey(KeyCode.Keypad1))
+        // NOTE: NOT IMPLEMENTED YET
+        bool activateStomp = false;
+        if (mobileControls)
+        {
+            // activateStomp = socketMap["stomp"];
+        }
+        else
+        {
+            activateStomp = Input.GetKey(KeyCode.Keypad1);
+        }
+        if(activateStomp)
         {
             Debug.Log("Stomp");
             /*Do damage to close enemies in range
@@ -287,7 +380,17 @@ public class PlayerMovement : MonoBehaviour
             */
         }
         //Shield - Should it be held? Able to move while held? Should buttons only be one at a time?
-        if (Input.GetKeyDown(KeyCode.Keypad2))
+        // NOTE: NOT IMPLEMENTED YET
+        bool activateShield = false;
+        if (mobileControls)
+        {
+            // activateShield = socketMap["shield"];
+        }
+        else
+        {
+            activateShield = Input.GetKeyDown(KeyCode.Keypad2);
+        }
+        if(activateShield)
         {
             Debug.Log("Shield");
             /*Do damage to close enemies in range
