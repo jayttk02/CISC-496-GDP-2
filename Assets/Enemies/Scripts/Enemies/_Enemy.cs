@@ -63,6 +63,19 @@ public class _Enemy : MonoBehaviour
         }
     }
 
+    public virtual void PunchKickCollision(int strength, AttackType attackType)
+    {
+        if (attackType == AttackType.Punch)
+        {
+            TakeDamage(strength);
+        }
+        else
+        {
+            TakeDamage(strength);
+        }
+
+    }
+
     public virtual void BulletCollision(int strength)
     {
         TakeDamage(strength);

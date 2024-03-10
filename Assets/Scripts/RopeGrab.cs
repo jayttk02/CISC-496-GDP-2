@@ -16,7 +16,7 @@ public class RopeGrab : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(GameObject.Find("Player").GetComponent<PlayerMovement>().isgrabbing());
+        //Debug.Log(GameObject.Find("Player").GetComponent<PlayerMovement>().isgrabbing());
         if (activate){
             GameObject.Find("Player").transform.position = end.transform.position;
         } else {

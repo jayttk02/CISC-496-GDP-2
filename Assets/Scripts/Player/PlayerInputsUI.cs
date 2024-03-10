@@ -52,7 +52,7 @@ public class PlayerInputsUI : MonoBehaviour
         if (shootTimer > 0f)
         {
             shootTimer -= Time.deltaTime;
-            shootTimerSlider.value = shootTimer;
+            shootTimerSlider.value = 1 - shootTimer;
             if (shootTimer <= 0f)
             {
                 shootTimerGO.SetActive(false);
@@ -121,6 +121,7 @@ public class PlayerInputsUI : MonoBehaviour
 
     public void ShootTimer()
     {
+        print("ShootTimer");
         shootTimer = 1f;
         shootTimerGO.SetActive(true);
         shootTimerSlider.value = 1f;

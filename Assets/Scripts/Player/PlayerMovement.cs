@@ -18,8 +18,10 @@ public class PlayerMovement : MonoBehaviour
     public float gunOffset = 0.75f;
     public GameObject leg;
     public float legOffset = 0.5f;
+    public LimbHitbox legHitbox;
     public GameObject arm;
     public float armOffset = 0.75f;
+    public LimbHitbox armHitbox;
     public GameObject bullet;
     public float jumpDuration = 1f;
     bool shooting = false;
@@ -186,7 +188,7 @@ public class PlayerMovement : MonoBehaviour
         //Punch
         if (Input.GetKey(KeyCode.Q) && !punching)
         {
-            Debug.Log("Punch");
+            //Debug.Log("Punch");
             punching = true;
             StartCoroutine(Punch());
             /*Do damage to close enemies in range
@@ -204,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
         //Kick
         if (Input.GetKey(KeyCode.E) && !kicking)
         {
-            Debug.Log("Kick");
+            //Debug.Log("Kick");
             kicking = true;
             StartCoroutine(Kick());
             /*Do damage to close enemies in range
@@ -334,6 +336,7 @@ public class PlayerMovement : MonoBehaviour
         float xOffset = Mathf.Cos(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         float yOffset = Mathf.Sin(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         Instantiate(bullet, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
+        playerInputsUI.ShootTimer();
         yield return new WaitForSeconds(1f);
         shooting = false;
     }
@@ -350,10 +353,16 @@ public class PlayerMovement : MonoBehaviour
             leg.transform.Rotate (new Vector3 (0, 0, -30));
             leg.GetComponent<Follow>().xOffset -= 0.5f;
         }
-        leg.GetComponent<BoxCollider2D>().enabled = true;
+        //leg.GetComponent<BoxCollider2D>().enabled = true;         // commented out when new leg hitbox code was implemented
+        if (legHitbox == null)
+        {
+            legHitbox = leg.transform.GetChild(0).GetComponent<LimbHitbox>();
+        }
+        legHitbox.ToggleActive();
         yield return new WaitForSeconds(0.01f);
-        leg.GetComponent<BoxCollider2D>().enabled = false;
+        //leg.GetComponent<BoxCollider2D>().enabled = false;        // commented out when new leg hitbox code was implemented
         yield return new WaitForSeconds(0.49f);
+        legHitbox.ToggleActive(false);
         if (leg.GetComponent<Follow>().xOffset > 0) 
         {
             leg.transform.Rotate (new Vector3 (0, 0, -30));
@@ -377,10 +386,16 @@ public class PlayerMovement : MonoBehaviour
         {
             arm.GetComponent<Follow>().xOffset -= 0.5f;
         }
-        arm.GetComponent<BoxCollider2D>().enabled = true;
+        //arm.GetComponent<BoxCollider2D>().enabled = true;         // commented out when new arm hitbox code was implemented
+        if (armHitbox == null)
+        {
+            armHitbox = arm.transform.GetChild(0).GetComponent<LimbHitbox>();
+        }
+        armHitbox.ToggleActive();
         yield return new WaitForSeconds(0.01f);
-        arm.GetComponent<BoxCollider2D>().enabled = false;
+        //arm.GetComponent<BoxCollider2D>().enabled = false;        // commented out when new arm hitbox code was implemented
         yield return new WaitForSeconds(0.49f);
+        armHitbox.ToggleActive(false);
         if (arm.GetComponent<Follow>().xOffset > 0) 
         {
             arm.GetComponent<Follow>().xOffset -= 0.5f;
