@@ -19,6 +19,8 @@ public class _Enemy : MonoBehaviour
 
     [Space(10)]
     [Tooltip("The effect that plays when the enemy is destroyed.")] public GameObject deathEffect;
+    //Bonus Heart
+    public GameObject heartDrop;
 
     // Start is called before the first frame update
     public virtual void Start()
@@ -92,6 +94,13 @@ public class _Enemy : MonoBehaviour
 
     public virtual void Death()
     {
+        float randValue = Random.value;
+        //Player Health -1 then 50% Chance of Heart Drop
+        if(HealthSystem.health <= 3 && HealthSystem.health >= 2 && randValue < .50f) Instantiate(heartDrop, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
+
+        //Player Health -2
+        if (HealthSystem.health < 2) Instantiate(heartDrop, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
+
         Instantiate(deathEffect, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);     // spawn death effect when health < 0
         Destroy(this.gameObject);   // destroys gameobject
     }

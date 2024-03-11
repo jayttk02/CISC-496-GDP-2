@@ -41,6 +41,12 @@ public class PlayerMovement : MonoBehaviour
     public float duration = 2f;
     float grabDuration = 0.5f;
 
+    //Audio
+    public AudioSource se_walk;
+    public AudioSource se_jump;
+    public AudioSource se_shoot;
+   
+
     public PlayerInputsUI playerInputsUI;       // script that effects the UI button display
 
     void Start()
@@ -272,6 +278,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
+        
         player_rigidbody.MovePosition(player_rigidbody.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
         if (movement.x > 0) 
         {
@@ -314,6 +321,7 @@ public class PlayerMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D Collider)
     {
+        se_jump.Play();
         if (Collider.collider.tag == "Ground") isGrounded = true;
         //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = true;
     }
@@ -334,6 +342,7 @@ public class PlayerMovement : MonoBehaviour
         float xOffset = Mathf.Cos(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         float yOffset = Mathf.Sin(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         Instantiate(bullet, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
+        se_shoot.Play();
         yield return new WaitForSeconds(1f);
         shooting = false;
     }
