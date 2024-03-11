@@ -32,9 +32,10 @@ public class HealthSystem : MonoBehaviour
             UpdateHealth();
         }
 
-        if(other.gameObject.name == "HeartDrop")
-        {
+        if(other.gameObject.tag == "Bonus_Heart")
+        {       
             health++;
+            Destroy(other.gameObject);
         }
     }
 
