@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class HealthSystem : MonoBehaviour
 {
     public int health = 3;
-
+    public AudioSource se_hit;
     public Animator[] healthPointAnimators;
 
     // Start is called before the first frame update
@@ -36,6 +36,7 @@ public class HealthSystem : MonoBehaviour
     public void UpdateHealth(int healthLost = 0)
     {
         health -= healthLost;
+        se_hit.Play();
         if (health <= 0)
         {
             ResetScene();
