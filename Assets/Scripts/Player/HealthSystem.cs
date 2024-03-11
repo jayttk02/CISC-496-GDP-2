@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class HealthSystem : MonoBehaviour
 {
-    public int health = 3;
+    public static int health = 3;
     public AudioSource se_hit;
     public Animator[] healthPointAnimators;
 
@@ -31,6 +31,11 @@ public class HealthSystem : MonoBehaviour
             health = 0;
             UpdateHealth();
         }
+
+        if(other.gameObject.name == "HeartDrop")
+        {
+            health++;
+        }
     }
 
     public void UpdateHealth(int healthLost = 0)
@@ -53,4 +58,6 @@ public class HealthSystem : MonoBehaviour
     public void ResetScene(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
+
 }
