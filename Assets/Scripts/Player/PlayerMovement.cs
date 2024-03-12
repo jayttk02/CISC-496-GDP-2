@@ -40,7 +40,6 @@ public class PlayerMovement : MonoBehaviour
     private float grabCheckTimer;
     private float conflictCheckTimer;
 
-    
     private WebSocket wss;
     private IDictionary<string, bool> socketMap = new Dictionary<string,bool>
     {
@@ -54,8 +53,8 @@ public class PlayerMovement : MonoBehaviour
     };
     private bool setTimerGrab = false;
     private bool setTimerGrab2 = false;
-    private bool setTimerJump = false;
-    private bool setTimerJump2 = false;
+    private bool jump1Occurring = false;
+    private bool jump2Occurring = false;
     private bool setTimerConflict = false;
     private float respond;
     public float duration = 2f;
@@ -101,112 +100,108 @@ public class PlayerMovement : MonoBehaviour
         ProcessInputs();
 
         bool activateJump1;
+        float timeBetweenJumps;
 
         //Check if Jump was hit by both with small delay using V and C as temp
         if (mobileControls)
         {
-            activateJump1 = socketMap["1j"] && !setTimerJump2;
+            activateJump1 = socketMap["1j"] && !jump2Occurring && !jump1Occurring;
             
         }
         else
         {
-            activateJump1 = Input.GetKey(KeyCode.V) && !setTimerJump2;
+            activateJump1 = Input.GetKey(KeyCode.V) && !jump2Occurring && !jump1Occurring;
         }
-        if(activateJump1)
+
+        if (activateJump1)
         {
-            if (!setTimerJump) 
+            if (!jump1Occurring)
             {
                 jumpCheckTimer = Time.time;
-                setTimerJump = true;
+                jump1Occurring = true;
             }
-            bool player2Jump;
-            if(mobileControls){
-                player2Jump = socketMap["2j"];
-            }
-            else{
-                player2Jump = Input.GetKey(KeyCode.C);
-            }
-            if(player2Jump)
-            {
-                respond = Time.time;
-                if ((respond - jumpCheckTimer) >= 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
-                    StartCoroutine(Jump());
-                    playerInputsUI.JumpUpdate();
+
+        }
+        else if (jump1Occurring)
+        {
+                timeBetweenJumps = Time.time - jumpCheckTimer;
+                if (timeBetweenJumps >= 0 && timeBetweenJumps < duration)
+                {
+                    bool player2Jump;
+                    if(mobileControls){
+                        player2Jump = socketMap["2j"];
+                    }
+                    else{
+                        player2Jump = Input.GetKey(KeyCode.C);
+                    }
+                    if(player2Jump)
+                    {
+                        if (isGrounded) {
+                            StartCoroutine(Jump());
+                            playerInputsUI.JumpUpdate();
+                        }
+                    }
                 }
-                socketMap["1j"] = false;
-                socketMap["2j"] = false;
-            }
+                else
+                {
+                    if (mobileControls)
+                    {
+                        socketMap["1j"] = false;
+                    }
+                    jump1Occurring = false;
+                }
         }
 
         bool activateJump2;
         if (mobileControls)
         {
-            activateJump2 = socketMap["2j"] && !setTimerJump;
+            activateJump2 = socketMap["2j"] && !jump1Occurring && !jump2Occurring;
         }
         else
         {
-            activateJump2 = Input.GetKey(KeyCode.C) && !setTimerJump;
+            activateJump2 = Input.GetKey(KeyCode.C) && !jump1Occurring && !jump2Occurring;
         }
-        if(activateJump2)
+
+        if (activateJump2)
         {
-            if (!setTimerJump2) 
+            if (!jump2Occurring)
             {
                 jumpCheckTimer = Time.time;
-                setTimerJump2 = true;
+                jump2Occurring = true;
             }
-            bool player1Jump;
-            if(mobileControls){
-                player1Jump = socketMap["1j"];
-            }
-            else{
-                player1Jump = Input.GetKey(KeyCode.V);
-            }
-            if(player1Jump)
+        }
+        else if (jump2Occurring)
+        {
+            timeBetweenJumps = Time.time - jumpCheckTimer;
+            if (timeBetweenJumps >= 0 && timeBetweenJumps < duration)
             {
-                respond = Time.time;
-                if ((respond - jumpCheckTimer) >= 0 && (respond - jumpCheckTimer) < duration && isGrounded) {
-                    StartCoroutine(Jump());
-                    playerInputsUI.JumpUpdate();
+                bool player1Jump;
+                if(mobileControls){
+                    player1Jump = socketMap["1j"];
                 }
-                socketMap["1j"] = false;
-                socketMap["2j"] = false;
+                else{
+                    player1Jump = Input.GetKey(KeyCode.V);
+                }
+                if(player1Jump)
+                {
+                    if (isGrounded) {
+                        StartCoroutine(Jump());
+                        playerInputsUI.JumpUpdate();
+                    }
+                }
             }
-        }
-
-        if (mobileControls)
-        {
-            playerInputsUI.ButtonHold("P1 Jump", socketMap["1j"]);      // player input ui checks if player 1's jump is held down
-            playerInputsUI.ButtonHold("P2 Jump", socketMap["2j"]);      // player input ui checks if player 2's jump is held down
-        }
-        else
-        {
-            playerInputsUI.ButtonHold("P1 Jump", Input.GetKey(KeyCode.V));      // player input ui checks if player 1's jump is held down
-            playerInputsUI.ButtonHold("P2 Jump", Input.GetKey(KeyCode.C));      // player input ui checks if player 2's jump is held down
-        }
-
-
-        if (mobileControls)
-        {
-            if(!socketMap["1j"])
+            else
             {
-                setTimerJump = false;
+                if (mobileControls)
+                {
+                    socketMap["2j"] = false;
+                }
+                jump2Occurring = false;
             }
-            if(!socketMap["2j"])
-            {
-                setTimerJump2 = false;
-            }
-        }
-        else
-        {
-            if (Input.GetKeyUp(KeyCode.V))
-            {
-                setTimerJump = false;
-            }
-            if (Input.GetKeyUp(KeyCode.C))
-            {
-                setTimerJump2 = false;
-            }
-        }
+        }  
+        
+        playerInputsUI.ButtonHold("P1 Jump", jump1Occurring);      // player input ui checks if player 1's jump is held down
+        playerInputsUI.ButtonHold("P2 Jump", jump2Occurring);      // player input ui checks if player 2's jump is held down
 
         // NOTE: GRAB NOT IMPLEMENTED YET
         if (!mobileControls){
@@ -274,12 +269,10 @@ public class PlayerMovement : MonoBehaviour
             if (socketMap["sf"])
             {
                 movement.x = 1;
-                socketMap["sf"] = false;
             }
             else if (socketMap["sb"])
             {
                 movement.x = -1;
-                socketMap["sb"] = false;
             }
             else if(movement.x != 0)
             {
@@ -315,24 +308,32 @@ public class PlayerMovement : MonoBehaviour
                 Debug.Log("Conflict");
             }
         }
-        if (mobileControls)
+
+        if (activateConflict)
         {
-            if (!socketMap["sf"] || !socketMap["sb"])
+            if (mobileControls)
             {
-                setTimerConflict = false;
+                if (!socketMap["sf"] || !socketMap["sb"])
+                {
+                    setTimerConflict = false;
+                }
             }
-        }
-        else
-        {
-            if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+            else
             {
-                setTimerConflict = false;
+                if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+                {
+                    setTimerConflict = false;
+                }
             }
         }
         
         playerInputsUI.ButtonHold("Step Forward",movement.x > 0);      // player input ui checks if step forward is held down
         playerInputsUI.ButtonHold("Step Backward", movement.x < 0);    // player input ui checks if step backward is held down
 
+        socketMap["sf"] = false;
+        socketMap["sb"] = false;
+
+        
         //Player 1
 
         //Punch
@@ -458,7 +459,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
-        player_rigidbody.MovePosition(player_rigidbody.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
+        player_rigidbody.MovePosition(player_rigidbody.position + movement * moveSpeed * Time.fixedDeltaTime);
         if (movement.x > 0) 
         {
             if (!kicking) {
