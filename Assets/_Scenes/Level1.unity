@@ -32800,6 +32800,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41243c12acd29e046a93a6ca5a598dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ip: 
+  mobileControls: 0
   canMove: 0
   moveSpeed: 5
   aimSpeed: 5
@@ -32809,8 +32811,10 @@ MonoBehaviour:
   gunOffset: 0.75
   leg: {fileID: 511842207}
   legOffset: 0.5
+  legHitbox: {fileID: 0}
   arm: {fileID: 1811324845}
   armOffset: 0.75
+  armHitbox: {fileID: 0}
   bullet: {fileID: 8250794043270493214, guid: 28b080f54df767f41b8dab33a0593e03, type: 3}
   jumpDuration: 0.75
   duration: 2
@@ -32818,6 +32822,7 @@ MonoBehaviour:
   se_jump: {fileID: 515581727}
   se_shoot: {fileID: 381644813}
   playerInputsUI: {fileID: 527140142}
+  aimAngle: 0
 --- !u!50 &527140137
 Rigidbody2D:
   serializedVersion: 4
@@ -32991,7 +32996,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiTransform: {fileID: 609047671}
-  uiAnimator: {fileID: 0}
+  uiAnimator: {fileID: 609047674}
   jumpCheck1: 0
   jumpCheck2: 0
 --- !u!1 &535720538
@@ -33227,9 +33232,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseScreenGO: {fileID: 976143376}
+  mainMenuGO: {fileID: 0}
   isPaused: 0
-  currentMenu: 0
-  mainMenuIndex: 0
   quitMenuQuitCheck: 0
 --- !u!1 &568142745
 GameObject:
@@ -33535,6 +33539,7 @@ GameObject:
   - component: {fileID: 609047673}
   - component: {fileID: 609047672}
   - component: {fileID: 609047674}
+  - component: {fileID: 609047675}
   m_Layer: 5
   m_Name: PlayerInputs
   m_TagString: Untagged
@@ -33624,6 +33629,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &609047675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 609047670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aea98a61741efe4685a83a87c1e84e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiTransform: {fileID: 609047671}
+  uiAnimator: {fileID: 609047674}
+  jumpCheck1: 0
+  jumpCheck2: 0
 --- !u!1 &622386110
 GameObject:
   m_ObjectHideFlags: 0
