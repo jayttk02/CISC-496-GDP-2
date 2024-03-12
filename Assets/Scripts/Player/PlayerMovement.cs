@@ -528,8 +528,8 @@ public class PlayerMovement : MonoBehaviour
         float xOffset = Mathf.Cos(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         float yOffset = Mathf.Sin(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         Instantiate(bullet, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
-        playerInputsUI.ShootTimer();
         se_shoot.Play();
+        playerInputsUI.ShootTimer();
         yield return new WaitForSeconds(1f);
         shooting = false;
         socketMap["s"] = false;
