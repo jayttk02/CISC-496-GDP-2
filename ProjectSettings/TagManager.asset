@@ -10,7 +10,6 @@ TagManager:
   - Ground
   - Spike
   - Radius
-  - Bonus_Heart
   layers:
   - Default
   - TransparentFX
