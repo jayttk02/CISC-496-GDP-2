@@ -121,6 +121,7 @@ public class PlayerInputsUI : MonoBehaviour
 
     public void ShootTimer()
     {
+        print("ShootTimer");
         shootTimer = 1f;
         shootTimerGO.SetActive(true);
         shootTimerSlider.value = 1f;

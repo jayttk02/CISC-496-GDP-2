@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, minimal-ui">
+    </head>
+    <body class="container">
+       <h1 hidden id="level"><%= level %></h1>
+      <script type="module">
+        import { createSocket } from "/js/webSocketConnect.js";
+        const webSocket = createSocket();
+
+        import * as buttonUtil from "/js/buttonUtil.js"
+
+        var level = document.getElementById("level").innerHTML;
+        
+        var jump = buttonUtil.player1Jump(webSocket);
+        if(level == 1){
+            document.body.appendChild(buttonUtil.stepForward(webSocket));
+            document.body.appendChild(jump);
+        }
+        else if(level == 2){
+            document.body.appendChild(buttonUtil.punch(webSocket));
+            jump.style.gridRow = "span 2";
+            document.body.appendChild(jump);
+            document.body.appendChild(buttonUtil.stepForward(webSocket));
+        }
+
+        window.addEventListener("deviceorientation", handleOrientation);
+        function handleOrientation(event){
+            updateFieldIfNotNull(event.beta);
+        }
+        function updateFieldIfNotNull(value, precision=0){
+            if (value != null){
+                value = value.toFixed(precision);
+                webSocket.send("a: " + value * -3);
+            }
+        }    
+    </script>
+    </body>
+</html>

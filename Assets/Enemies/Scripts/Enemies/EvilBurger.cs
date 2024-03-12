@@ -20,5 +20,20 @@ public class EvilBurger : _Enemy
         }
     }
 
-    public override void BulletCollision(int strength) { }
+    public override void PunchKickCollision(int strength, AttackType attackType)
+    {
+        if (attackType == AttackType.Kick)
+        {
+            TakeDamage(strength);
+        }
+        else
+        {
+            StartCoroutine(NoDamageFlash());
+        }
+    }
+
+    public override void BulletCollision(int strength)
+    {
+        StartCoroutine(NoDamageFlash());
+    }
 }
