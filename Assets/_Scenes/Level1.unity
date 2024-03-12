@@ -32800,8 +32800,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41243c12acd29e046a93a6ca5a598dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ip: 
-  mobileControls: 0
+  ip: 192.168.2.37
+  mobileControls: 1
   canMove: 0
   moveSpeed: 5
   aimSpeed: 5
