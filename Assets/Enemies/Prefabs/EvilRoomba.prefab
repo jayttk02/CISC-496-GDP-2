@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyName: 
-  health: 3
+  health: 1
   speed: 0
   _animator: {fileID: 0}
   _rigidbody: {fileID: 0}
@@ -156,6 +156,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   deathEffect: {fileID: 3374455099600874160, guid: 49de94fb95e705043861cd721a873b34, type: 3}
+  heartDrop: {fileID: 0}
   currentPointIndex: 0
   stopPoint0: -5
   stopPoint1: 5

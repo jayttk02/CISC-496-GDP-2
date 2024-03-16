@@ -160,6 +160,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   deathEffect: {fileID: 3374455099600874160, guid: 49de94fb95e705043861cd721a873b34, type: 3}
+  heartDrop: {fileID: 0}
   isGrounded: 0
   bounceTimerMax: 10
   bounceTimerLeft: 0
@@ -187,6 +188,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   deathEffect: {fileID: 3374455099600874160, guid: 49de94fb95e705043861cd721a873b34, type: 3}
+  heartDrop: {fileID: 0}
   isGrounded: 0
   bounceTimerMax: 10
   bounceTimerLeft: 0
