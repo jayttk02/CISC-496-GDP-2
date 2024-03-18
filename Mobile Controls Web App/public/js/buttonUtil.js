@@ -35,12 +35,12 @@ export function punch(webSocket){ return createButton("PUNCH", "red", webSocket,
 
 export function stepForward(webSocket){ return createButton("STEP FORWARD", "green", webSocket, "sf", false); }
 
-export function player1Jump(webSocket){ return createButton("JUMP", "yellow", webSocket, "1j"); }
+export function player1Jump(webSocket){ return createButton("JUMP", "pink", webSocket, "1j"); }
 
-export function shoot(webSocket){ return createButton("SHOOT", "blue", webSocket, "s"); }
+export function shoot(webSocket){ return createButton("SHOOT", "yellow", webSocket, "s"); }
 
 export function kick(webSocket){ return createButton("KICK", "orange", webSocket, "k"); }
 
-export function stepBackward(webSocket){ return createButton("STEP BACKWARD", "purple", webSocket, "sb", false); }
+export function stepBackward(webSocket){ return createButton("STEP BACKWARD", "green", webSocket, "sb", false); }
 
-export function player2Jump(webSocket){ return createButton("JUMP", "yellow", webSocket, "2j"); }
+export function player2Jump(webSocket){ return createButton("JUMP", "pink", webSocket, "2j"); }

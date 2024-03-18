@@ -7,12 +7,14 @@ public class Aim : MonoBehaviour
 {
     private PlayerMovement playerMovement;
     private bool mobileControls;
+    private Animator anim;
     
     // Start is called before the first frame update
     void Start()
     {
         playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
         mobileControls = playerMovement.mobileControls;
+        anim = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -31,7 +33,23 @@ public class Aim : MonoBehaviour
             mousePos.x = mousePos.x - objectPos.x;
             mousePos.y = mousePos.y - objectPos.y;
             float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle_forward") ||
+                anim.GetCurrentAnimatorStateInfo(0).IsName("walk_forward") ||
+                anim.GetCurrentAnimatorStateInfo(0).IsName("punch_forward") ||
+                anim.GetCurrentAnimatorStateInfo(0).IsName("kick_forward"))
+            {
+                if (angle <= 100 && angle >= -100)
+                {
+                    transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+                }
+            }
+            else
+            {
+                if (angle >= 80 || angle <= -80)
+                {
+                    transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+                }
+            }
         }
     }
 }

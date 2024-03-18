@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     bool kicking = false;
     bool punching = false;
     bool grabbing = false;
-
+    private bool attempting_jump = false;
 
     //Timer
     private float jumpCheckTimer;
@@ -69,9 +69,12 @@ public class PlayerMovement : MonoBehaviour
     public PlayerInputsUI playerInputsUI;       // script that effects the UI button display
 
     public float aimAngle;
+
+    private Animator anim;
     
     void Start()
     {
+        anim = GetComponent<Animator>();
         if (mobileControls)
         {
             wss = new WebSocket("wss://"+ ip + ":8443");
@@ -97,13 +100,22 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!canMove)       // if canMove is false, no other inputs go through
-        {
-            movement = new Vector2(0, 0);
-            return;
-        }
+        punching = anim.GetCurrentAnimatorStateInfo(0).IsName("punch_forward") || anim.GetCurrentAnimatorStateInfo(0).IsName("punch_backward");
+        kicking = anim.GetCurrentAnimatorStateInfo(0).IsName("kick_forward") || anim.GetCurrentAnimatorStateInfo(0).IsName("kick_backward");
+        attempting_jump = (jump1Occurring || jump2Occurring) && !(jump1Occurring && jump2Occurring) && isGrounded;
+        anim.SetBool("attempting_jump", attempting_jump);
+        anim.SetBool("jumping", !isGrounded);
+        
+        playerInputsUI.ButtonHold("Punch", punching);    // player input ui checks if punch is held down
+        playerInputsUI.ButtonHold("Kick", kicking);     // player input ui checks if kick is held down
+
+        canMove = !(punching || kicking || attempting_jump);
+        
+
 
         ProcessInputs();
+        
+        anim.SetFloat("speed", movement.x);
 
         bool activateJump1;
         float timeBetweenJumps;
@@ -209,6 +221,12 @@ public class PlayerMovement : MonoBehaviour
         playerInputsUI.ButtonHold("P1 Jump", jump1Occurring);      // player input ui checks if player 1's jump is held down
         playerInputsUI.ButtonHold("P2 Jump", jump2Occurring);      // player input ui checks if player 2's jump is held down
 
+        if (!canMove)       // if canMove is false, no other inputs go through
+        {
+            movement = new Vector2(0, 0);
+            return;
+        }
+        
         // NOTE: GRAB NOT IMPLEMENTED YET
         if (!mobileControls){
             //Check if Grab was hit by both with small delay using N and M as temp
@@ -354,20 +372,20 @@ public class PlayerMovement : MonoBehaviour
         }
         if(activatePunch)
         {
-            //Debug.Log("Punch");
-            punching = true;
-            StartCoroutine(Punch());
-            /*Do damage to close enemies in range
-            Animation here
-            if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isPunchable)
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle_forward") || anim.GetCurrentAnimatorStateInfo(0).IsName("walk_forward"))
             {
-                Punch does damage  
-                Sound effect play
-                Visual indicator damage done
+                anim.SetTrigger("punch_forward");
             }
-            */
+            else
+            {
+                anim.SetTrigger("punch_backward");
+            }
+            if (mobileControls)
+            {
+                socketMap["p"] = false;
+            }
         }
-        playerInputsUI.ButtonHold("Punch", activatePunch);    // player input ui checks if punch is held down
+        
 
         //Kick
         bool activateKick;
@@ -381,20 +399,21 @@ public class PlayerMovement : MonoBehaviour
         }
         if(activateKick)
         {
-            //Debug.Log("Kick");
-            kicking = true;
-            StartCoroutine(Kick());
-            /*Do damage to close enemies in range
-            Animation here
-            if (Vector2.Distance(transform.position, enemyLoc) < 0.5f && enemy.isKickable)
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle_forward") || anim.GetCurrentAnimatorStateInfo(0).IsName("walk_forward"))
             {
-                Kick does damage  
-                Sound effect play
-                Visual indicator damage done
+                anim.SetTrigger("kick_forward");
             }
-            */
+            else
+            {
+                anim.SetTrigger("kick_backward");
+            }
+            if (mobileControls)
+            {
+                socketMap["k"] = false;
+            }
         }
-        playerInputsUI.ButtonHold("Kick", activateKick);     // player input ui checks if kick is held down
+        
+        
 
         //Player 2
         //Shoot
@@ -533,74 +552,6 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(1f);
         shooting = false;
         socketMap["s"] = false;
-    }
-
-    IEnumerator Kick()
-    {
-        if (leg.GetComponent<Follow>().xOffset > 0) 
-        {
-            leg.transform.Rotate (new Vector3 (0, 0, 30));
-            leg.GetComponent<Follow>().xOffset += 0.5f;
-        }
-        else if (leg.GetComponent<Follow>().xOffset < 0)
-        {
-            leg.transform.Rotate (new Vector3 (0, 0, -30));
-            leg.GetComponent<Follow>().xOffset -= 0.5f;
-        }
-        //leg.GetComponent<BoxCollider2D>().enabled = true;         // commented out when new leg hitbox code was implemented
-        if (legHitbox == null)
-        {
-            legHitbox = leg.transform.GetChild(0).GetComponent<LimbHitbox>();
-        }
-        legHitbox.ToggleActive();
-        yield return new WaitForSeconds(0.01f);
-        //leg.GetComponent<BoxCollider2D>().enabled = false;        // commented out when new leg hitbox code was implemented
-        yield return new WaitForSeconds(0.49f);
-        legHitbox.ToggleActive(false);
-        if (leg.GetComponent<Follow>().xOffset > 0) 
-        {
-            leg.transform.Rotate (new Vector3 (0, 0, -30));
-            leg.GetComponent<Follow>().xOffset -= 0.5f;
-        }
-        else if (leg.GetComponent<Follow>().xOffset < 0)
-        {
-            leg.transform.Rotate (new Vector3 (0, 0, 30));
-            leg.GetComponent<Follow>().xOffset += 0.5f;
-        }
-        kicking = false;
-        socketMap["k"] = false;
-    }
-
-    IEnumerator Punch()
-    {
-        if(arm.GetComponent<Follow>().xOffset > 0) 
-        {
-            arm.GetComponent<Follow>().xOffset += 0.5f;
-        }
-        else if (arm.GetComponent<Follow>().xOffset < 0)
-        {
-            arm.GetComponent<Follow>().xOffset -= 0.5f;
-        }
-        //arm.GetComponent<BoxCollider2D>().enabled = true;         // commented out when new arm hitbox code was implemented
-        if (armHitbox == null)
-        {
-            armHitbox = arm.transform.GetChild(0).GetComponent<LimbHitbox>();
-        }
-        armHitbox.ToggleActive();
-        yield return new WaitForSeconds(0.01f);
-        //arm.GetComponent<BoxCollider2D>().enabled = false;        // commented out when new arm hitbox code was implemented
-        yield return new WaitForSeconds(0.49f);
-        armHitbox.ToggleActive(false);
-        if (arm.GetComponent<Follow>().xOffset > 0) 
-        {
-            arm.GetComponent<Follow>().xOffset -= 0.5f;
-        }
-        else if (arm.GetComponent<Follow>().xOffset < 0)
-        {
-            arm.GetComponent<Follow>().xOffset += 0.5f;
-        }
-        punching = false;
-        socketMap["p"] = false;
     }
 
     IEnumerator Jump()
