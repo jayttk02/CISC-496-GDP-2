@@ -13,7 +13,8 @@ public class HealthSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        health = 3;
+        UpdateHealth();
     }
 
     // Update is called once per frame
@@ -31,16 +32,17 @@ public class HealthSystem : MonoBehaviour
             health = 0;
             UpdateHealth();
         }
-
-        if(other.gameObject.tag == "Bonus_Heart")
+        else if (other.gameObject.tag == "Bonus_Heart")
         {       
             health++;
+            UpdateHealth(-1);
             Destroy(other.gameObject);
         }
     }
 
     public void UpdateHealth(int healthLost = 0)
     {
+        print("bruh");
         health -= healthLost;
         se_hit.Play();
         if (health <= 0)
@@ -49,9 +51,9 @@ public class HealthSystem : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < healthLost; i++)
+            for (int i = 0; i < healthPointAnimators.Length; i++)
             {
-                healthPointAnimators[health + i].SetTrigger("dead");
+                healthPointAnimators[i].SetBool("dead", i >= health);
             }
         }
     }

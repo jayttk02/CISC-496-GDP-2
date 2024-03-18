@@ -6,6 +6,7 @@ using WebSocketSharp;
 
 public class MainMenu : MonoBehaviour
 {
+    GameManager gm;
     public Transform canvas;
 
     Text playerCountText;
@@ -16,6 +17,9 @@ public class MainMenu : MonoBehaviour
     GameObject continueButtonGO;
 
     GameObject stageSelectMenuGO;
+    Button[] stageSelectMenuButtons;
+
+    Animator fadeOutAnimator;
 
     [Space(10)]
     public string ip;
@@ -23,23 +27,24 @@ public class MainMenu : MonoBehaviour
     private IDictionary<string, bool> socketMap = new Dictionary<string, bool>();
     public int numberOfPlayers;
     public int minNumberOfPlayers;
-
-    [Space(10)]
-    public bool existingGame;   // if there is no existing game, continue button is turned off, 
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        Time.timeScale = 1;         // when loading from level pause screen
+
         playerCountText = canvas.GetChild(1).GetChild(1).GetComponent<Text>();
         playerCountAnimator = canvas.GetChild(1).GetComponent<Animator>();
 
         mainMenuGO = canvas.GetChild(2).gameObject;
         newGameButton = mainMenuGO.transform.GetChild(2).GetChild(0).GetComponent<Button>();
         continueButtonGO = mainMenuGO.transform.GetChild(2).GetChild(1).gameObject;
-        continueButtonGO.SetActive(existingGame);
+        continueButtonGO.SetActive(gm.gameInProgress);
 
         stageSelectMenuGO = canvas.GetChild(3).gameObject;
+
+        fadeOutAnimator = canvas.GetChild(4).gameObject.GetComponent<Animator>();
 
         MainMenuOpen(true);
         StageSelectOpen(false);
@@ -68,7 +73,8 @@ public class MainMenu : MonoBehaviour
     {
         playerCountText.text = numberOfPlayers.ToString() + " / " + minNumberOfPlayers.ToString();
         playerCountAnimator.SetBool("greenEffect", numberOfPlayers >= minNumberOfPlayers);
-        newGameButton.interactable = numberOfPlayers >= minNumberOfPlayers;
+        //newGameButton.interactable = numberOfPlayers >= minNumberOfPlayers;
+        newGameButton.interactable = true;
     }
     
     void MainMenuOpen(bool on = true)
@@ -81,7 +87,7 @@ public class MainMenu : MonoBehaviour
         switch (index)
         {
             case (0):
-                print("TODO: New Game");
+                StartCoroutine(NewGameButton());
                 break;
             case (1):
                 StageSelectOpen();
@@ -95,6 +101,15 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    IEnumerator NewGameButton()
+    {
+        fadeOutAnimator.SetTrigger("fadeOut");
+
+        yield return new WaitForSecondsRealtime(0.55f);
+
+        gm.NewGame();
+    }
+
     public void StageSelectOpen(bool on = true)
     {
         stageSelectMenuGO.SetActive(on);
@@ -102,6 +117,25 @@ public class MainMenu : MonoBehaviour
         if (on)
         {
             MainMenuOpen(false);
+
+            if (stageSelectMenuButtons == null)
+            {
+                stageSelectMenuButtons = new Button[stageSelectMenuGO.transform.GetChild(2).childCount];
+                for (int i = 0; i < stageSelectMenuButtons.Length; i++)
+                {
+                    stageSelectMenuButtons[i] = stageSelectMenuGO.transform.GetChild(2).GetChild(i).GetComponent<Button>();
+                }
+            }
+
+            for (int i = 0; i < stageSelectMenuButtons.Length; i++)
+            {
+                stageSelectMenuButtons[i].interactable = i <= gm.highestLevelUnlocked;
+
+                if (i > gm.highestLevelUnlocked)
+                {
+                    stageSelectMenuButtons[i].gameObject.transform.GetChild(0).GetComponent<Text>().text = "???";
+                }
+            }
         }
         else
         {
@@ -118,9 +152,6 @@ public class MainMenu : MonoBehaviour
                 break;
             case (1):
                 print("TODO: Load level 1");
-                break;
-            case (2):
-                print("TODO: Load level 2");
                 break;
         }
     }
