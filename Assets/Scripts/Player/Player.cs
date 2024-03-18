@@ -24,13 +24,13 @@ public class Player : MonoBehaviour
             playerLivesUI[1].SetActive(true);
             playerLivesUI[2].SetActive(true);
         }
-        if (healthCount == 2)
+        else if (healthCount == 2)
         {
             playerLivesUI[0].SetActive(true);
             playerLivesUI[1].SetActive(true);
             playerLivesUI[2].SetActive(false);
         }
-        if (healthCount == 1)
+        else if (healthCount == 1)
         {
             playerLivesUI[0].SetActive(true);
             playerLivesUI[1].SetActive(false);

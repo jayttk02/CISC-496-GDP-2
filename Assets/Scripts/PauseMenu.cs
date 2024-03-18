@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
+    GameManager gm;
+
     public GameObject pauseScreenGO;
     Animator pauseScreenAnimator;
     public GameObject mainMenuGO;
@@ -19,12 +20,12 @@ public class PauseMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pauseScreenGO.SetActive(false);
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 
+        pauseScreenGO.SetActive(false);
         pauseScreenAnimator = pauseScreenGO.GetComponent<Animator>();
 
         mainMenuGO = pauseScreenGO.transform.GetChild(1).gameObject;
-
         quitMenuGO = pauseScreenGO.transform.GetChild(2).gameObject;
     }
 
@@ -116,7 +117,6 @@ public class PauseMenu : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(0.55f);
 
-        print("bruv");
-        SceneManager.LoadScene(0);
+        gm.ChangeScene("MainMenu");
     }
 }
