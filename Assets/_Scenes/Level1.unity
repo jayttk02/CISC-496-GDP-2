@@ -33111,8 +33111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41243c12acd29e046a93a6ca5a598dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ip: 192.168.2.37
-  mobileControls: 0
+  ip: 10.216.112.17
+  mobileControls: 1
   canMove: 0
   moveSpeed: 5
   aimSpeed: 5
@@ -33247,7 +33247,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: 1566931258, guid: e28f1a23b3f19fb4989226e6b52a1adc, type: 3}
+  m_Sprite: {fileID: 354219548, guid: 626642b72c470ac4ca2b5d737ad89aa5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -33255,7 +33255,7 @@ SpriteRenderer:
   m_Size: {x: 0.5, y: 0.9}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &527140140
