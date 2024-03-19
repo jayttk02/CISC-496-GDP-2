@@ -44,7 +44,9 @@ public class PlayerMovement : MonoBehaviour
     private IDictionary<string, bool> socketMap = new Dictionary<string,bool>
     {
         ["sf"] = false,
+        ["sfend"] = false,
         ["sb"] = false,
+        ["sbend"] = false,
         ["1j"] = false,
         ["2j"] = false,
         ["p"] = false,
@@ -110,8 +112,6 @@ public class PlayerMovement : MonoBehaviour
         playerInputsUI.ButtonHold("Kick", kicking);     // player input ui checks if kick is held down
 
         canMove = !(punching || kicking || attempting_jump);
-        
-
 
         ProcessInputs();
         
@@ -124,7 +124,6 @@ public class PlayerMovement : MonoBehaviour
         if (mobileControls)
         {
             activateJump1 = socketMap["1j"] && !jump2Occurring && !jump1Occurring;
-            
         }
         else
         {
@@ -262,26 +261,26 @@ public class PlayerMovement : MonoBehaviour
         Move();
     }
 
-    IEnumerator Smooth()
-    {
-        float offset;
-        if (movement.x > 0)
-        {
-            offset = -0.1f;
-        }
-        else
-        {
-            offset = 0.1f;
-        }
-
-        while (Math.Abs(movement.x) > 0.1)
-        {
-            movement.x += offset;
-            yield return new WaitForSeconds(0.2f);
-        }
-
-        movement.x = 0;
-    }
+    // IEnumerator Smooth()
+    // {
+    //     float offset;
+    //     if (movement.x > 0)
+    //     {
+    //         offset = -0.001f;
+    //     }
+    //     else
+    //     {
+    //         offset = 0.001f;
+    //     }
+    //
+    //     while (Math.Abs(movement.x) > 0.001)
+    //     {
+    //         movement.x += offset;
+    //         yield return new WaitForSeconds(0.001f);
+    //     }
+    //
+    //     movement.x = 0;
+    // }
 
     void ProcessInputs()
     {
@@ -298,10 +297,14 @@ public class PlayerMovement : MonoBehaviour
             {
                 movement.x = -1;
             }
-            else if(movement.x != 0)
+            else
             {
-                StartCoroutine(Smooth());
+                movement.x = 0;
             }
+            // else if(movement.x != 0)
+            // {
+            //    // StartCoroutine(Smooth());
+            // }
         }
         else
         {
@@ -353,10 +356,20 @@ public class PlayerMovement : MonoBehaviour
         
         playerInputsUI.ButtonHold("Step Forward",movement.x > 0);      // player input ui checks if step forward is held down
         playerInputsUI.ButtonHold("Step Backward", movement.x < 0);    // player input ui checks if step backward is held down
-
-        socketMap["sf"] = false;
-        socketMap["sb"] = false;
-
+        
+        if (mobileControls)
+        {
+            if (socketMap["sfend"])
+            {
+                socketMap["sf"] = false;
+                socketMap["sfend"] = false;
+            }
+            if (socketMap["sbend"])
+            {
+                socketMap["sb"] = false;
+                socketMap["sbend"] = false;
+            }
+        }
         
         //Player 1
 

@@ -42,7 +42,7 @@ public class HealthSystem : MonoBehaviour
 
     public void UpdateHealth(int healthLost = 0)
     {
-        print("bruh");
+        //print("bruh");
         health -= healthLost;
         se_hit.Play();
         if (health <= 0)

@@ -33111,7 +33111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41243c12acd29e046a93a6ca5a598dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ip: 10.216.112.17
+  ip: 192.168.2.37
   mobileControls: 1
   canMove: 0
   moveSpeed: 5
@@ -33267,7 +33267,7 @@ Transform:
   m_GameObject: {fileID: 527140135}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.7, y: 0.23, z: 0}
+  m_LocalPosition: {x: 20.44, y: 0.16, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -33899,7 +33899,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -235, y: -110}
+  m_AnchoredPosition: {x: -243, y: -147}
   m_SizeDelta: {x: 420, y: 155}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &609047672

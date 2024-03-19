@@ -7,6 +7,7 @@
     </head>
     <body class="container">
        <h1 hidden id="level"><%= level %></h1>
+       <h1 hidden id="angle">1000</h1>
       <script type="module">
         import { createSocket } from "/js/webSocketConnect.js";
         const webSocket = createSocket();
@@ -34,7 +35,13 @@
         function updateFieldIfNotNull(value, precision=0){
             if (value != null){
                 value = value.toFixed(precision);
-                webSocket.send("a: " + value * -3);
+                var prevValue = document.getElementById("angle");
+                //webSocket.send(prevValue.innerHTML);
+                if(Math.abs(prevValue.innerHTML - value) > 5){
+                    webSocket.send("a: " + value * -1);
+                    prevValue.innerHTML = value;
+                }
+                
             }
         }    
     </script>

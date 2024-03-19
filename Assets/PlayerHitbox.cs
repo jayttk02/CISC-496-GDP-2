@@ -8,11 +8,11 @@ public class PlayerHitbox : MonoBehaviour
     {
         if (col.tag == "Enemy")
         {
-            print("Collided with enemy");
+            //print("Collided with enemy");
         }
         else if (col.tag == "Projectile")
         {
-            print("Collided with projectile");
+            //print("Collided with projectile");
         }
     }
 }

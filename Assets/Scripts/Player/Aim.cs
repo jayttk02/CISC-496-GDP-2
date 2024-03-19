@@ -8,6 +8,7 @@ public class Aim : MonoBehaviour
     private PlayerMovement playerMovement;
     private bool mobileControls;
     private Animator anim;
+    // private bool flipped;
     
     // Start is called before the first frame update
     void Start()
@@ -20,9 +21,21 @@ public class Aim : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        bool forward = anim.GetCurrentAnimatorStateInfo(0).IsName("idle_forward") ||
+                       anim.GetCurrentAnimatorStateInfo(0).IsName("walk_forward") ||
+                       anim.GetCurrentAnimatorStateInfo(0).IsName("punch_forward") ||
+                       anim.GetCurrentAnimatorStateInfo(0).IsName("kick_forward");
         if (mobileControls)
         {
-            transform.rotation = Quaternion.Euler(new Vector3(0, 0, playerMovement.aimAngle));
+            float angle = playerMovement.aimAngle;
+            if (angle <= 90 && angle >= -90)
+            {
+                if (!forward)
+                {
+                    angle = 180 - angle;
+                }
+                transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+            }
         }
         else
         {
@@ -33,10 +46,8 @@ public class Aim : MonoBehaviour
             mousePos.x = mousePos.x - objectPos.x;
             mousePos.y = mousePos.y - objectPos.y;
             float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle_forward") ||
-                anim.GetCurrentAnimatorStateInfo(0).IsName("walk_forward") ||
-                anim.GetCurrentAnimatorStateInfo(0).IsName("punch_forward") ||
-                anim.GetCurrentAnimatorStateInfo(0).IsName("kick_forward"))
+            print(angle);
+            if (forward)
             {
                 if (angle <= 100 && angle >= -100)
                 {
@@ -50,6 +61,7 @@ public class Aim : MonoBehaviour
                     transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
                 }
             }
+            
         }
     }
 }

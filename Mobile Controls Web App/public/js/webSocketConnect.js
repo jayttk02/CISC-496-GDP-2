@@ -1,5 +1,5 @@
 function createSocket(){
-    const webSocket = new WebSocket('wss://10.216.112.17:8443/');
+    const webSocket = new WebSocket('wss://192.168.2.37:8443/');
     webSocket.onmessage = (event) => {
         console.log(event);
         console.log('Message from server: ' + event.data + "<br>");

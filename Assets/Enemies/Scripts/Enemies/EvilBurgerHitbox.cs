@@ -15,7 +15,7 @@ public class EvilBurgerHitbox : MonoBehaviour
     {
         if (col.gameObject.name == "Bullet(Clone)" || col.gameObject.tag == "Player")
         {
-            print("bruh");
+            //print("bruh");
             evilBurgerScript._animator.SetBool("inRadius", true);
         }
     }

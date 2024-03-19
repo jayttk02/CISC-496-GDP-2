@@ -4,7 +4,7 @@ export function createContainer(){
     return div;
 }
 
-function createButton(text, colour, webSocket, socketMsg, tap = true){
+function createButton(text, colour, webSocket, socketMsg, tap = true, socketMsgExit = ""){
     var button = document.createElement("BUTTON");
     button.classList.add("block");
     button.classList.add(colour);
@@ -13,13 +13,12 @@ function createButton(text, colour, webSocket, socketMsg, tap = true){
         button.addEventListener("touchstart", function() {webSocket.send(socketMsg);});
     }
     else{
-        var timer;
         button.addEventListener('pointerdown', function() {
-            timer=setInterval(function(){
-                webSocket.send(socketMsg);
-            }, 0)
+            webSocket.send(socketMsg);
         });
-        button.addEventListener('pointerup', function() {if(timer) clearInterval(timer);});
+        button.addEventListener('pointerup', function() {
+            webSocket.send(socketMsgExit);
+        });
     }
     return button;
 }
@@ -33,7 +32,7 @@ function createLabel(text){
 
 export function punch(webSocket){ return createButton("PUNCH", "red", webSocket, "p"); }
 
-export function stepForward(webSocket){ return createButton("STEP FORWARD", "green", webSocket, "sf", false); }
+export function stepForward(webSocket){ return createButton("STEP FORWARD", "green", webSocket, "sf", false, "sfend"); }
 
 export function player1Jump(webSocket){ return createButton("JUMP", "pink", webSocket, "1j"); }
 
@@ -41,6 +40,6 @@ export function shoot(webSocket){ return createButton("SHOOT", "yellow", webSock
 
 export function kick(webSocket){ return createButton("KICK", "orange", webSocket, "k"); }
 
-export function stepBackward(webSocket){ return createButton("STEP BACKWARD", "green", webSocket, "sb", false); }
+export function stepBackward(webSocket){ return createButton("STEP BACKWARD", "green", webSocket, "sb", false, "sbend"); }
 
 export function player2Jump(webSocket){ return createButton("JUMP", "pink", webSocket, "2j"); }
