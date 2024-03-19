@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
     public float armOffset = 0.75f;
     public LimbHitbox armHitbox;
     public GameObject bullet;
+    public GameObject bulletTrail;
+    public GameObject bulletTrail2;
     public float jumpDuration = 1f;
     bool shooting = false;
     bool kicking = false;
@@ -547,6 +549,8 @@ public class PlayerMovement : MonoBehaviour
         float xOffset = Mathf.Cos(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         float yOffset = Mathf.Sin(gun.transform.eulerAngles.z * Mathf.Deg2Rad);
         Instantiate(bullet, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
+        Instantiate(bulletTrail, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
+        Instantiate(bulletTrail2, new Vector2(gun.transform.position.x + xOffset, gun.transform.position.y + yOffset), Quaternion.identity);
         se_shoot.Play();
         playerInputsUI.ShootTimer();
         yield return new WaitForSeconds(1f);
