@@ -9,10 +9,15 @@ public class PauseMenu : MonoBehaviour
     public GameObject pauseScreenGO;
     Animator pauseScreenAnimator;
     public GameObject mainMenuGO;
-    GameObject quitMenuGO;
+    public GameObject movesetMenuGO;
+    public GameObject[] movesetMenuScreens;
+    public GameObject quitMenuGO;
 
     [Space(10)]
     public bool isPaused;
+
+    [Space(10)]
+    public int movesetMenuIndex;
 
     [Space(10)]
     public bool quitMenuQuitCheck;
@@ -26,7 +31,8 @@ public class PauseMenu : MonoBehaviour
         pauseScreenAnimator = pauseScreenGO.GetComponent<Animator>();
 
         mainMenuGO = pauseScreenGO.transform.GetChild(1).gameObject;
-        quitMenuGO = pauseScreenGO.transform.GetChild(2).gameObject;
+        movesetMenuGO = pauseScreenGO.transform.GetChild(2).gameObject;
+        quitMenuGO = pauseScreenGO.transform.GetChild(3).gameObject;
     }
 
     // Update is called once per frame
@@ -50,6 +56,7 @@ public class PauseMenu : MonoBehaviour
         {
             Time.timeScale = 0;
             MainMenu();
+            MovesetMenu(false);
             QuitMenu(false);
         }
         else
@@ -75,7 +82,8 @@ public class PauseMenu : MonoBehaviour
                 Pause(false);
                 break;
             case (1):
-                print("To do: moveset");
+                MainMenu(false);
+                MovesetMenu();
                 break;
             case (2):
                 print("To do: settings");
@@ -84,6 +92,49 @@ public class PauseMenu : MonoBehaviour
                 MainMenu(false);
                 QuitMenu();
                 break;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// MOVESET MENU //////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MovesetMenu(bool on = true)
+    {
+        movesetMenuGO.SetActive(on);
+
+        if (on)
+        {
+            movesetMenuIndex = 0;
+
+            if (movesetMenuScreens.Length == 0)
+            {
+                movesetMenuScreens = new GameObject[movesetMenuGO.transform.childCount - 2];
+                for (int i = 0; i < movesetMenuScreens.Length; i++)
+                {
+                    movesetMenuScreens[i] = movesetMenuGO.transform.GetChild(i + 2).gameObject;
+                }
+            }
+
+            MovesetMenuUpdate();
+        }
+    }
+
+    public void MovesetMenuUpdate(int dir = 0)
+    {
+        movesetMenuIndex += dir;
+        if (movesetMenuIndex < 0)
+        {
+            movesetMenuIndex = movesetMenuScreens.Length - 1;
+        }
+        else if (movesetMenuIndex > movesetMenuScreens.Length - 1)
+        {
+            movesetMenuIndex = 0;
+        }
+
+        for (int i = 0; i < movesetMenuScreens.Length; i++)
+        {
+            movesetMenuScreens[i].SetActive(i == movesetMenuIndex);
         }
     }
 

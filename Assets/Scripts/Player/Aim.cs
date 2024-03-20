@@ -46,7 +46,7 @@ public class Aim : MonoBehaviour
             mousePos.x = mousePos.x - objectPos.x;
             mousePos.y = mousePos.y - objectPos.y;
             float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
-            print(angle);
+            //print(angle);
             if (forward)
             {
                 if (angle <= 100 && angle >= -100)

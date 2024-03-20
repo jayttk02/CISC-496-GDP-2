@@ -46,3 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameInProgress: 1
   highestLevelUnlocked: 0
+  masterAM: {fileID: 24100000, guid: 59d5f2fb103e6e04ebd6be3cd490c55b, type: 2}
+  masterVolumeOn: 1
+  musicOn: 1
+  SFXOn: 1
