@@ -32,6 +32,9 @@ public class GameManager : MonoBehaviour
             case ("Level0"):
                 SceneManager.LoadScene(1);
                 break;
+            case ("Level1"):
+                SceneManager.LoadScene(2);
+                break;
         }
 
         DontDestroyOnLoad(this.gameObject);
@@ -82,7 +85,19 @@ public class GameManager : MonoBehaviour
 
     public void UpdateVolume(string type)
     {
-
+        switch (type)
+        {
+            case ("Master"):
+                masterVolumeOn = !masterVolumeOn;
+                break;
+            case ("Music"):
+                musicOn = !musicOn;
+                break;
+            case ("SFX"):
+                SFXOn = !SFXOn;
+                break;
+        }
+        SetVolume(type);
     }
 
     public void NewGame()

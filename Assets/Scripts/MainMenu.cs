@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +19,9 @@ public class MainMenu : MonoBehaviour
     GameObject stageSelectMenuGO;
     Button[] stageSelectMenuButtons;
 
+    GameObject settingsMenuGO;
+    public Text[] settingsMenuButtonTexts;
+
     Animator fadeOutAnimator;
 
     [Space(10)]
@@ -34,20 +37,23 @@ public class MainMenu : MonoBehaviour
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         Time.timeScale = 1;         // when loading from level pause screen
 
-        playerCountText = canvas.GetChild(1).GetChild(1).GetComponent<Text>();
-        playerCountAnimator = canvas.GetChild(1).GetComponent<Animator>();
+        playerCountText = canvas.GetChild(2).GetChild(1).GetComponent<Text>();
+        playerCountAnimator = canvas.GetChild(2).GetComponent<Animator>();
 
-        mainMenuGO = canvas.GetChild(2).gameObject;
-        newGameButton = mainMenuGO.transform.GetChild(2).GetChild(0).GetComponent<Button>();
-        continueButtonGO = mainMenuGO.transform.GetChild(2).GetChild(1).gameObject;
+        mainMenuGO = canvas.GetChild(3).gameObject;
+        newGameButton = mainMenuGO.transform.GetChild(1).GetChild(0).GetComponent<Button>();
+        continueButtonGO = mainMenuGO.transform.GetChild(1).GetChild(1).gameObject;
         continueButtonGO.SetActive(gm.gameInProgress);
 
-        stageSelectMenuGO = canvas.GetChild(3).gameObject;
+        stageSelectMenuGO = canvas.GetChild(4).gameObject;
 
-        fadeOutAnimator = canvas.GetChild(4).gameObject.GetComponent<Animator>();
+        settingsMenuGO = canvas.GetChild(5).gameObject;
+
+        fadeOutAnimator = canvas.GetChild(6).gameObject.GetComponent<Animator>();
 
         MainMenuOpen(true);
         StageSelectOpen(false);
+        SettingsOpen(false);
 
         wss = new WebSocket("wss://" + ip + ":8443");
         wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
@@ -93,7 +99,7 @@ public class MainMenu : MonoBehaviour
                 StageSelectOpen();
                 break;
             case (2):
-                print("TODO: Settings");
+                SettingsOpen();
                 break;
             case (3):
                 Application.Quit();
@@ -145,13 +151,82 @@ public class MainMenu : MonoBehaviour
 
     public void StageSelectButton(int index)
     {
+        StartCoroutine(StageSelectButtonSelected(index));
+    }
+
+    IEnumerator StageSelectButtonSelected(int index)
+    {
+        fadeOutAnimator.SetTrigger("fadeOut");
+
+        yield return new WaitForSecondsRealtime(0.55f);
+
+        gm.ChangeScene("Level" + index.ToString());
+    }
+
+    public void SettingsOpen(bool on = true)
+    {
+        settingsMenuGO.SetActive(on);
+        MainMenuOpen(!on);
+
+        if (on)
+        {
+            if (settingsMenuButtonTexts.Length == 0)
+            {
+                settingsMenuButtonTexts = new Text[settingsMenuGO.transform.GetChild(0).childCount];
+                for (int i = 0; i < settingsMenuButtonTexts.Length; i++)
+                {
+                    settingsMenuButtonTexts[i] = settingsMenuGO.transform.GetChild(0).GetChild(i).GetChild(1).GetChild(0).GetComponent<Text>();
+                }
+            }
+
+            SettingsTextsUpdate();
+        }
+    }
+
+    public void SettingsTextsUpdate(int index = -1)
+    {
         switch (index)
         {
             case (0):
-                print("TODO: Load level 0");
+                gm.UpdateVolume("Master");
+                if (gm.masterVolumeOn)
+                {
+                    settingsMenuButtonTexts[0].text = "✔";
+                }
+                else
+                {
+                    settingsMenuButtonTexts[0].text = "✘";
+                }
                 break;
             case (1):
-                print("TODO: Load level 1");
+                gm.UpdateVolume("Music");
+                if (gm.musicOn)
+                {
+                    settingsMenuButtonTexts[1].text = "✔";
+                }
+                else
+                {
+                    settingsMenuButtonTexts[1].text = "✘";
+                }
+                break;
+            case (2):
+                gm.UpdateVolume("SFX");
+                if (gm.SFXOn)
+                {
+                    settingsMenuButtonTexts[2].text = "✔";
+                }
+                else
+                {
+                    settingsMenuButtonTexts[2].text = "✘";
+                }
+                break;
+            default:
+                gm.UpdateVolume("Master");
+                SettingsTextsUpdate(0);
+                gm.UpdateVolume("Music");
+                SettingsTextsUpdate(1);
+                gm.UpdateVolume("SFX");
+                SettingsTextsUpdate(2);
                 break;
         }
     }

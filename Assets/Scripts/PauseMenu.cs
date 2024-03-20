@@ -1,6 +1,7 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class PauseMenu : MonoBehaviour
     public GameObject mainMenuGO;
     public GameObject movesetMenuGO;
     public GameObject[] movesetMenuScreens;
+    public GameObject settingsMenuGO;
+    public Text[] settingsMenuVolumeTexts;
     public GameObject quitMenuGO;
 
     [Space(10)]
@@ -32,7 +35,8 @@ public class PauseMenu : MonoBehaviour
 
         mainMenuGO = pauseScreenGO.transform.GetChild(1).gameObject;
         movesetMenuGO = pauseScreenGO.transform.GetChild(2).gameObject;
-        quitMenuGO = pauseScreenGO.transform.GetChild(3).gameObject;
+        settingsMenuGO = pauseScreenGO.transform.GetChild(3).gameObject;
+        quitMenuGO = pauseScreenGO.transform.GetChild(4).gameObject;
     }
 
     // Update is called once per frame
@@ -57,6 +61,7 @@ public class PauseMenu : MonoBehaviour
             Time.timeScale = 0;
             MainMenu();
             MovesetMenu(false);
+            SettingsMenu(false);
             QuitMenu(false);
         }
         else
@@ -86,7 +91,8 @@ public class PauseMenu : MonoBehaviour
                 MovesetMenu();
                 break;
             case (2):
-                print("To do: settings");
+                MainMenu(false);
+                SettingsMenu();
                 break;
             case (3):
                 MainMenu(false);
@@ -136,6 +142,87 @@ public class PauseMenu : MonoBehaviour
         {
             movesetMenuScreens[i].SetActive(i == movesetMenuIndex);
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// SETTINGS MENU /////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SettingsMenu(bool on = true)
+    {
+        settingsMenuGO.SetActive(on);
+
+        if (on)
+        {
+            if (settingsMenuVolumeTexts.Length == 0)
+            {
+                settingsMenuVolumeTexts = new Text[settingsMenuGO.transform.GetChild(0).childCount];
+                for (int i = 0; i < settingsMenuVolumeTexts.Length; i++)
+                {
+                    settingsMenuVolumeTexts[i] = settingsMenuGO.transform.GetChild(0).GetChild(i).GetChild(1).GetChild(0).GetComponent<Text>();
+                }
+            }
+
+            SettingsMenuUpdate(-1);
+        }
+    }
+
+    public void SettingsMenuUpdate(int index = -1)
+    {
+        if (index == 0 || index == -1)
+        {
+            if (index == 0)
+            {
+                gm.UpdateVolume("Master");
+            }
+
+            if (gm.masterVolumeOn)
+            {
+                settingsMenuVolumeTexts[0].text = "✔";
+            }
+            else
+            {
+                settingsMenuVolumeTexts[0].text = "✘";
+            }
+        }
+        if (index == 1 || index == -1)
+        {
+            if (index == 1)
+            {
+                gm.UpdateVolume("Music");
+            }
+
+            if (gm.musicOn)
+            {
+                settingsMenuVolumeTexts[1].text = "✔";
+            }
+            else
+            {
+                settingsMenuVolumeTexts[1].text = "✘";
+            }
+        }
+        if (index == 2 || index == -1)
+        {
+            if (index == 2)
+            {
+                gm.UpdateVolume("SFX");
+            }
+
+            if (gm.SFXOn)
+            {
+                settingsMenuVolumeTexts[2].text = "✔";
+            }
+            else
+            {
+                settingsMenuVolumeTexts[2].text = "✘";
+            }
+        }
+    }
+
+    public void SettingsMenuBackButton()
+    {
+        SettingsMenu(false);
+        MainMenu();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
