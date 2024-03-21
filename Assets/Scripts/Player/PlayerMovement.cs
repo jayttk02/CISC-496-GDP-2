@@ -61,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
     private float respond;
     public float duration = 2f;
     float grabDuration = 0.5f;
+    private bool jumping = false;
 
     //Audio
     public AudioSource se_walk;
@@ -106,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
         kicking = anim.GetCurrentAnimatorStateInfo(0).IsName("kick_forward") || anim.GetCurrentAnimatorStateInfo(0).IsName("kick_backward");
         attempting_jump = (jump1Occurring || jump2Occurring) && !(jump1Occurring && jump2Occurring) && isGrounded;
         anim.SetBool("attempting_jump", attempting_jump);
-        anim.SetBool("jumping", !isGrounded);
+        anim.SetBool("jumping", jumping);
         
         playerInputsUI.ButtonHold("Punch", punching);    // player input ui checks if punch is held down
         playerInputsUI.ButtonHold("Kick", kicking);     // player input ui checks if kick is held down
@@ -153,9 +154,11 @@ public class PlayerMovement : MonoBehaviour
                     }
                     if(player2Jump)
                     {
-                        if (isGrounded) {
+                        if (isGrounded)
+                        {
+                            jumping = true;
                             StartCoroutine(Jump());
-                            playerInputsUI.JumpUpdate();
+                            // playerInputsUI.JumpUpdate();
                         }
                     }
                 }
@@ -201,9 +204,11 @@ public class PlayerMovement : MonoBehaviour
                 }
                 if(player1Jump)
                 {
-                    if (isGrounded) {
+                    if (isGrounded)
+                    {
+                        jumping = true;
                         StartCoroutine(Jump());
-                        playerInputsUI.JumpUpdate();
+                        // playerInputsUI.JumpUpdate();
                     }
                 }
             }
@@ -217,8 +222,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }  
         
-        playerInputsUI.ButtonHold("P1 Jump", jump1Occurring);      // player input ui checks if player 1's jump is held down
-        playerInputsUI.ButtonHold("P2 Jump", jump2Occurring);      // player input ui checks if player 2's jump is held down
+        playerInputsUI.ButtonHold("P1 Jump", jump1Occurring || jumping);      // player input ui checks if player 1's jump is held down
+        playerInputsUI.ButtonHold("P2 Jump", jump2Occurring || jumping);      // player input ui checks if player 2's jump is held down
 
         if (!canMove)       // if canMove is false, no other inputs go through
         {
@@ -572,6 +577,9 @@ public class PlayerMovement : MonoBehaviour
         GetComponent<Rigidbody2D>().gravityScale = -17;
         yield return new WaitForSeconds(jumpDuration);
         GetComponent<Rigidbody2D>().gravityScale = 20;
+        jumping = false;
+        jump1Occurring = false;
+        jump2Occurring = false;
     }
 
     public bool iskicking() {
