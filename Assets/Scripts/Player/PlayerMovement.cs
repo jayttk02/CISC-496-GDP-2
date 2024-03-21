@@ -35,6 +35,9 @@ public class PlayerMovement : MonoBehaviour
     bool grabbing = false;
     private bool attempting_jump = false;
 
+    public float hitstunMax;
+    private bool isInHitstun;
+
     //Timer
     private float jumpCheckTimer;
     private float grabCheckTimer;
@@ -152,13 +155,13 @@ public class PlayerMovement : MonoBehaviour
                     else{
                         player2Jump = Input.GetKey(KeyCode.C);
                     }
-                    if(player2Jump)
+                    if(player2Jump && !isInHitstun)
                     {
                         if (isGrounded)
                         {
                             jumpingUp = true;
                             StartCoroutine(Jump());
-                            // playerInputsUI.JumpUpdate();
+                            //playerInputsUI.JumpUpdate();
                         }
                     }
                 }
@@ -202,13 +205,11 @@ public class PlayerMovement : MonoBehaviour
                 else{
                     player1Jump = Input.GetKey(KeyCode.V);
                 }
-                if(player1Jump)
+                if(player1Jump && !isInHitstun)
                 {
-                    if (isGrounded)
-                    {
-                        jumpingUp = true;
+                    if (isGrounded && !isInHitstun) {
                         StartCoroutine(Jump());
-                        // playerInputsUI.JumpUpdate();
+                        //playerInputsUI.JumpUpdate();
                     }
                 }
             }
@@ -334,11 +335,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 conflictCheckTimer = Time.time;
                 setTimerConflict = true;
-                playerInputsUI.Conflict();  // triggers the player input ui to shake, indicating a conflict is occuring
             } 
             else if ((Time.time - conflictCheckTimer) > duration) {
                 Debug.Log("Conflict");
             }
+            playerInputsUI.Conflict();  // triggers the player input ui to shake, indicating a conflict is occuring
         }
 
         if (activateConflict)
@@ -390,6 +391,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if(activatePunch)
         {
+            armHitbox.ToggleActive();
             if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle_forward") || anim.GetCurrentAnimatorStateInfo(0).IsName("walk_forward"))
             {
                 anim.SetTrigger("punch_forward");
@@ -417,6 +419,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if(activateKick)
         {
+            legHitbox.ToggleActive();
             if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle_forward") || anim.GetCurrentAnimatorStateInfo(0).IsName("walk_forward"))
             {
                 anim.SetTrigger("kick_forward");
@@ -436,6 +439,7 @@ public class PlayerMovement : MonoBehaviour
         //Player 2
         //Shoot
         bool activateShoot;
+        
         if (mobileControls)
         {
             activateShoot = socketMap["s"] && !shooting;
@@ -444,7 +448,8 @@ public class PlayerMovement : MonoBehaviour
         {
             activateShoot = Input.GetKey(KeyCode.E) && !shooting;
         }
-        if(activateShoot)
+
+        if (activateShoot && !isInHitstun)
         {
             Debug.Log("Shoot");
             shooting = true;
@@ -502,42 +507,47 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
+        if (isInHitstun)
+        {
+            return;
+        }
+
         player_rigidbody.MovePosition(player_rigidbody.position + movement * moveSpeed * Time.fixedDeltaTime);
         if (movement.x > 0) 
         {
-            if (!kicking) {
-                leg.GetComponent<Follow>().xOffset = legOffset;
-            } else {
-                leg.GetComponent<Follow>().xOffset = legOffset + 0.5f;
-                if (leg.transform.eulerAngles.z > 300)
-                {
-                    leg.transform.Rotate (new Vector3 (0, 0, 60));
-                }
-            }
-            if (!punching) {
-                arm.GetComponent<Follow>().xOffset = armOffset;
-            } else {
-                arm.GetComponent<Follow>().xOffset = armOffset + 0.5f;
-            }
+            //if (!kicking) {
+            //    leg.GetComponent<Follow>().xOffset = legOffset;
+            //} else {
+            //    leg.GetComponent<Follow>().xOffset = legOffset + 0.5f;
+            //    if (leg.transform.eulerAngles.z > 300)
+            //    {
+            //        leg.transform.Rotate (new Vector3 (0, 0, 60));
+            //    }
+            //}
+            //if (!punching) {
+            //    arm.GetComponent<Follow>().xOffset = armOffset;
+            //} else {
+            //    arm.GetComponent<Follow>().xOffset = armOffset + 0.5f;
+            //}
             gun.GetComponent<Follow>().xOffset = gunOffset;
         }
         else if (movement.x < 0)
         {
             //Debug.Log(leg.transform.eulerAngles.z);
-            if (!kicking) {
-                leg.GetComponent<Follow>().xOffset = -legOffset;
-            } else {
-                leg.GetComponent<Follow>().xOffset = -legOffset - 0.5f;
-                if (leg.transform.eulerAngles.z > 0 && leg.transform.eulerAngles.z < 300)
-                {
-                    leg.transform.Rotate (new Vector3 (0, 0, -60));
-                }
-            }
-            if (!punching) {
-                arm.GetComponent<Follow>().xOffset = -armOffset;
-            } else {
-                arm.GetComponent<Follow>().xOffset = -armOffset - 0.5f;
-            }
+            //if (!kicking) {
+            //    leg.GetComponent<Follow>().xOffset = -legOffset;
+            //} else {
+            //    leg.GetComponent<Follow>().xOffset = -legOffset - 0.5f;
+            //    if (leg.transform.eulerAngles.z > 0 && leg.transform.eulerAngles.z < 300)
+            //    {
+            //        leg.transform.Rotate (new Vector3 (0, 0, -60));
+            //    }
+            //}
+            //if (!punching) {
+            //    arm.GetComponent<Follow>().xOffset = -armOffset;
+            //} else {
+            //    arm.GetComponent<Follow>().xOffset = -armOffset - 0.5f;
+            //}
             gun.GetComponent<Follow>().xOffset = -gunOffset;
         }
     }
@@ -591,5 +601,21 @@ public class PlayerMovement : MonoBehaviour
     }
     public bool isgrabbing() {
         return grabbing;
+    }
+
+    public void StartHitstun()
+    {
+        StartCoroutine(Hitstun());
+    }
+
+    IEnumerator Hitstun()
+    {
+        isInHitstun = true;
+        anim.SetBool("isInHitstun", true);
+
+        yield return new WaitForSeconds(hitstunMax);
+
+        isInHitstun = false;
+        anim.SetBool("isInHitstun", false);
     }
 }

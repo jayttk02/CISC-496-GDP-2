@@ -9,10 +9,13 @@ public class HealthSystem : MonoBehaviour
     public static int health = 3;
     public AudioSource se_hit;
     public Animator[] healthPointAnimators;
+    private PlayerMovement _playerMovement;
 
     // Start is called before the first frame update
     void Start()
     {
+        _playerMovement = GetComponent<PlayerMovement>();
+
         health = 3;
         UpdateHealth();
     }
@@ -51,6 +54,11 @@ public class HealthSystem : MonoBehaviour
         }
         else
         {
+            if (healthLost > 0)
+            {
+                _playerMovement.StartHitstun();
+            }
+
             for (int i = 0; i < healthPointAnimators.Length; i++)
             {
                 healthPointAnimators[i].SetBool("dead", i >= health);

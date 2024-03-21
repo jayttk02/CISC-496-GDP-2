@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -9,17 +10,17 @@ public class GameManager : MonoBehaviour
     public bool gameInProgress;
     public int highestLevelUnlocked;
 
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-        
-    //}
+    [Header("Volume")]
+    public AudioMixer masterAM;
+    public bool masterVolumeOn;
+    public bool musicOn;
+    public bool SFXOn;
 
-    //// Update is called once per frame
-    //void Update()
-    //{
-        
-    //}
+    void Start()
+    {
+        SetVolume("Master");
+        SetVolume("Music");
+    }
 
     public void ChangeScene(string sceneName)
     {
@@ -31,9 +32,72 @@ public class GameManager : MonoBehaviour
             case ("Level0"):
                 SceneManager.LoadScene(1);
                 break;
+            case ("Level1"):
+                SceneManager.LoadScene(2);
+                break;
         }
 
         DontDestroyOnLoad(this.gameObject);
+    }
+
+    public void SetVolume(string type, AudioSource _audioSource = null)
+    {
+        if (masterAM == null)
+        {
+            masterAM = GameObject.Find("Audio").GetComponent<AudioSource>().outputAudioMixerGroup.audioMixer;
+        }
+
+        switch (type)
+        {
+            case ("Master"):
+
+                if (masterVolumeOn)
+                {
+                    masterAM.SetFloat("masterVolume", 0f);
+                }
+                else
+                {
+                    masterAM.SetFloat("masterVolume", -80f);
+                }
+                break;
+            case ("Music"):
+                if (musicOn)
+                {
+                    masterAM.SetFloat("musicVolume", 0f);
+                }
+                else
+                {
+                    masterAM.SetFloat("musicVolume", -80f);
+                }
+                break;
+            case ("SFX"):
+                if (SFXOn)
+                {
+                    masterAM.SetFloat("sfxVolume", 0f);
+                }
+                else
+                {
+                    masterAM.SetFloat("sfxVolume", -80f);
+                }
+                break;
+        }
+    }
+
+    public void UpdateVolume(string type)
+    {
+        switch (type)
+        {
+            case ("Master"):
+                masterVolumeOn = !masterVolumeOn;
+                break;
+            case ("Music"):
+                musicOn = !musicOn;
+                break;
+            case ("SFX"):
+                SFXOn = !SFXOn;
+                break;
+        }
+        SetVolume(type);
     }
 
     public void NewGame()
