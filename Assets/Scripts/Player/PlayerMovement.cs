@@ -158,7 +158,7 @@ public class PlayerMovement : MonoBehaviour
                     {
                         if (isGrounded) {
                             StartCoroutine(Jump());
-                            playerInputsUI.JumpUpdate();
+                            //playerInputsUI.JumpUpdate();
                         }
                     }
                 }
@@ -206,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (isGrounded && !isInHitstun) {
                         StartCoroutine(Jump());
-                        playerInputsUI.JumpUpdate();
+                        //playerInputsUI.JumpUpdate();
                     }
                 }
             }
