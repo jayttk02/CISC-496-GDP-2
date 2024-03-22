@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using WebSocketSharp;
@@ -9,7 +10,7 @@ public class MainMenu : MonoBehaviour
     GameManager gm;
     public Transform canvas;
 
-    Text playerCountText;
+    TextMeshProUGUI playerCountText;
     Animator playerCountAnimator;
 
     GameObject mainMenuGO;
@@ -20,7 +21,7 @@ public class MainMenu : MonoBehaviour
     Button[] stageSelectMenuButtons;
 
     GameObject settingsMenuGO;
-    public Text[] settingsMenuButtonTexts;
+    public TextMeshProUGUI[] settingsMenuButtonTexts;
 
     Animator fadeOutAnimator;
 
@@ -30,6 +31,8 @@ public class MainMenu : MonoBehaviour
     private IDictionary<string, bool> socketMap = new Dictionary<string, bool>();
     public int numberOfPlayers;
     public int minNumberOfPlayers;
+
+    private bool ready;
     
     // Start is called before the first frame update
     void Start()
@@ -37,7 +40,7 @@ public class MainMenu : MonoBehaviour
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         Time.timeScale = 1;         // when loading from level pause screen
 
-        playerCountText = canvas.GetChild(2).GetChild(1).GetComponent<Text>();
+        playerCountText = canvas.GetChild(2).GetChild(1).GetComponent<TextMeshProUGUI>();
         playerCountAnimator = canvas.GetChild(2).GetComponent<Animator>();
 
         mainMenuGO = canvas.GetChild(3).gameObject;
@@ -72,15 +75,18 @@ public class MainMenu : MonoBehaviour
     {
         wss.Send("want # players");
         yield return new WaitForSeconds(3);
-        StartCoroutine(CheckForPlayers());
+        if (!ready)
+        {
+            StartCoroutine(CheckForPlayers());
+        }
     }
 
     void Update()
     {
+        ready = numberOfPlayers >= minNumberOfPlayers;
         playerCountText.text = numberOfPlayers.ToString() + " / " + minNumberOfPlayers.ToString();
-        playerCountAnimator.SetBool("greenEffect", numberOfPlayers >= minNumberOfPlayers);
-        //newGameButton.interactable = numberOfPlayers >= minNumberOfPlayers;
-        newGameButton.interactable = true;
+        playerCountAnimator.SetBool("greenEffect", ready);
+        newGameButton.interactable = ready;
     }
     
     void MainMenuOpen(bool on = true)
@@ -172,10 +178,10 @@ public class MainMenu : MonoBehaviour
         {
             if (settingsMenuButtonTexts.Length == 0)
             {
-                settingsMenuButtonTexts = new Text[settingsMenuGO.transform.GetChild(0).childCount];
+                settingsMenuButtonTexts = new TextMeshProUGUI[settingsMenuGO.transform.GetChild(0).childCount];
                 for (int i = 0; i < settingsMenuButtonTexts.Length; i++)
                 {
-                    settingsMenuButtonTexts[i] = settingsMenuGO.transform.GetChild(0).GetChild(i).GetChild(1).GetChild(0).GetComponent<Text>();
+                    settingsMenuButtonTexts[i] = settingsMenuGO.transform.GetChild(0).GetChild(i).GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>();
                 }
             }
 
@@ -191,33 +197,33 @@ public class MainMenu : MonoBehaviour
                 gm.UpdateVolume("Master");
                 if (gm.masterVolumeOn)
                 {
-                    settingsMenuButtonTexts[0].text = "✔";
+                    settingsMenuButtonTexts[0].text = "x";
                 }
                 else
                 {
-                    settingsMenuButtonTexts[0].text = "✘";
+                    settingsMenuButtonTexts[0].text = "";
                 }
                 break;
             case (1):
                 gm.UpdateVolume("Music");
                 if (gm.musicOn)
                 {
-                    settingsMenuButtonTexts[1].text = "✔";
+                    settingsMenuButtonTexts[1].text = "x";
                 }
                 else
                 {
-                    settingsMenuButtonTexts[1].text = "✘";
+                    settingsMenuButtonTexts[1].text = "";
                 }
                 break;
             case (2):
                 gm.UpdateVolume("SFX");
                 if (gm.SFXOn)
                 {
-                    settingsMenuButtonTexts[2].text = "✔";
+                    settingsMenuButtonTexts[2].text = "x";
                 }
                 else
                 {
-                    settingsMenuButtonTexts[2].text = "✘";
+                    settingsMenuButtonTexts[2].text = "";
                 }
                 break;
             default:
