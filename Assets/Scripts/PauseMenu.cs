@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject movesetMenuGO;
     public GameObject[] movesetMenuScreens;
     public GameObject settingsMenuGO;
-    public Text[] settingsMenuVolumeTexts;
+    public TextMeshProUGUI[] settingsMenuVolumeTexts;
     public GameObject quitMenuGO;
 
     [Space(10)]
@@ -162,10 +163,10 @@ public class PauseMenu : MonoBehaviour
         {
             if (settingsMenuVolumeTexts.Length == 0)
             {
-                settingsMenuVolumeTexts = new Text[settingsMenuGO.transform.GetChild(0).childCount];
+                settingsMenuVolumeTexts = new TextMeshProUGUI[settingsMenuGO.transform.GetChild(0).childCount];
                 for (int i = 0; i < settingsMenuVolumeTexts.Length; i++)
                 {
-                    settingsMenuVolumeTexts[i] = settingsMenuGO.transform.GetChild(0).GetChild(i).GetChild(1).GetChild(0).GetComponent<Text>();
+                    settingsMenuVolumeTexts[i] = settingsMenuGO.transform.GetChild(0).GetChild(i).GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>();
                 }
             }
 
@@ -184,11 +185,11 @@ public class PauseMenu : MonoBehaviour
 
             if (gm.masterVolumeOn)
             {
-                settingsMenuVolumeTexts[0].text = "✔";
+                settingsMenuVolumeTexts[0].text = "x";
             }
             else
             {
-                settingsMenuVolumeTexts[0].text = "✘";
+                settingsMenuVolumeTexts[0].text = "";
             }
         }
         if (index == 1 || index == -1)
@@ -200,11 +201,11 @@ public class PauseMenu : MonoBehaviour
 
             if (gm.musicOn)
             {
-                settingsMenuVolumeTexts[1].text = "✔";
+                settingsMenuVolumeTexts[1].text = "x";
             }
             else
             {
-                settingsMenuVolumeTexts[1].text = "✘";
+                settingsMenuVolumeTexts[1].text = "";
             }
         }
         if (index == 2 || index == -1)
@@ -216,11 +217,11 @@ public class PauseMenu : MonoBehaviour
 
             if (gm.SFXOn)
             {
-                settingsMenuVolumeTexts[2].text = "✔";
+                settingsMenuVolumeTexts[2].text = "x";
             }
             else
             {
-                settingsMenuVolumeTexts[2].text = "✘";
+                settingsMenuVolumeTexts[2].text = "";
             }
         }
     }
