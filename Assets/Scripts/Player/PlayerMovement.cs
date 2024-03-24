@@ -225,6 +225,10 @@ public class PlayerMovement : MonoBehaviour
             }
         }  
         
+        print("jump1Occurring: " + jump1Occurring);
+        print("jump2Occuring: " + jump2Occurring);
+        print("jumpingUp: " + jumpingUp);
+        
         playerInputsUI.ButtonHold("P1 Jump", jump1Occurring || jumpingUp);      // player input ui checks if player 1's jump is held down
         playerInputsUI.ButtonHold("P2 Jump", jump2Occurring || jumpingUp);      // player input ui checks if player 2's jump is held down
 
@@ -593,6 +597,11 @@ public class PlayerMovement : MonoBehaviour
         jumpingUp = false;
         jump1Occurring = false;
         jump2Occurring = false;
+        if (mobileControls)
+        {
+            socketMap["1j"] = false;
+            socketMap["2j"] = false;
+        }
     }
 
     public bool iskicking() {

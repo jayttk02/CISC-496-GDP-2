@@ -53154,6 +53154,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7197567212228462025, guid: cbd8e1b80dd84044da31f7c7e88ba898, type: 3}
+      propertyPath: ip
+      value: 10.216.112.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 7197567212228462025, guid: cbd8e1b80dd84044da31f7c7e88ba898, type: 3}
       propertyPath: se_jump
       value: 
       objectReference: {fileID: 515581727}
@@ -53169,6 +53173,10 @@ PrefabInstance:
       propertyPath: armHitbox
       value: 
       objectReference: {fileID: 28616984}
+    - target: {fileID: 7197567212228462025, guid: cbd8e1b80dd84044da31f7c7e88ba898, type: 3}
+      propertyPath: mobileControls
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
