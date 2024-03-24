@@ -321,7 +321,6 @@ public class PlayerMovement : MonoBehaviour
 
         //movement.y = Input.GetAxisRaw("Vertical");
         // TODO: update w/ mobile controls
-        conflictCheckTimer = 0;
         bool activateConflict;
 
         if (mobileControls)
