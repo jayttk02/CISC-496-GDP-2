@@ -37,8 +37,8 @@
                 value = value.toFixed(precision);
                 var prevValue = document.getElementById("angle");
                 //webSocket.send(prevValue.innerHTML);
-                if(Math.abs(prevValue.innerHTML - value) > 5){
-                    webSocket.send("a: " + value * -1);
+                if(Math.abs(prevValue.innerHTML - value) > 1){
+                    webSocket.send("a: " + value * -3);
                     prevValue.innerHTML = value;
                 }
                 
