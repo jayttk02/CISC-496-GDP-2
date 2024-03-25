@@ -45696,6 +45696,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 28616984}
     - target: {fileID: 7197567212228462025, guid: cbd8e1b80dd84044da31f7c7e88ba898, type: 3}
+      propertyPath: bulletTrail
+      value: 
+      objectReference: {fileID: 8250794043270493214, guid: 33f1a63f625b99f47bc19784bcf32237, type: 3}
+    - target: {fileID: 7197567212228462025, guid: cbd8e1b80dd84044da31f7c7e88ba898, type: 3}
+      propertyPath: bulletTrail2
+      value: 
+      objectReference: {fileID: 8250794043270493214, guid: 0167d76816b0c4847a498eac105f088a, type: 3}
+    - target: {fileID: 7197567212228462025, guid: cbd8e1b80dd84044da31f7c7e88ba898, type: 3}
       propertyPath: mobileControls
       value: 0
       objectReference: {fileID: 0}
