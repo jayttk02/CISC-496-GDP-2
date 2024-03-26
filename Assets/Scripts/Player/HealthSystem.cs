@@ -10,6 +10,7 @@ public class HealthSystem : MonoBehaviour
     public AudioSource se_hit;
     public Animator[] healthPointAnimators;
     private PlayerMovement _playerMovement;
+    public AudioSource se_heart;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +39,7 @@ public class HealthSystem : MonoBehaviour
         else if (other.gameObject.tag == "Bonus_Heart")
         {       
             health++;
+            se_heart.Play();
             UpdateHealth(-1);
             Destroy(other.gameObject);
         }
