@@ -119,7 +119,7 @@ public class _Enemy : MonoBehaviour
         //Player Health -1 then 50% Chance of Heart Drop
         if (heartDrop != null)
         {
-            if (HealthSystem.health <= 3 && HealthSystem.health >= 2 && randValue < .50f) Instantiate(heartDrop, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
+            if (HealthSystem.health <= 3 && HealthSystem.health >= 2 && randValue < .30f) Instantiate(heartDrop, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
 
             //Player Health -2
             if (HealthSystem.health < 2) Instantiate(heartDrop, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
