@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public string ip;
     public bool mobileControls;
     public bool canMove;        // set to false if player is not supposed to be allowed to move (boss intros, etc.)
+    public bool waiting;        // if player is waiting for scripted event to end (boss intros, etc.)
 
     [Space(10)]
     private float startSpeed;
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     bool punching = false;
     bool grabbing = false;
     private bool attempting_jump = false;
+    public bool onMovingPlatform;
 
     public float hitstunMax;
     private bool isInHitstun;
@@ -73,13 +75,15 @@ public class PlayerMovement : MonoBehaviour
     public AudioSource se_jump;
     public AudioSource se_shoot;
    
-
     public PlayerInputsUI playerInputsUI;       // script that effects the UI button display
 
     public float aimAngle;
 
     private Animator anim;
-    
+
+    public bool victoryAnimationTrigger;
+    public int victoryTransitionIndex;
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -117,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
         playerInputsUI.ButtonHold("Punch", punching);    // player input ui checks if punch is held down
         playerInputsUI.ButtonHold("Kick", kicking);     // player input ui checks if kick is held down
 
-        canMove = !(punching || kicking || attempting_jump);
+        canMove = !(punching || kicking || attempting_jump || waiting);
 
         ProcessInputs();
         
@@ -512,7 +516,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
-        if (isInHitstun)
+        if (isInHitstun || !canMove)
         {
             return;
         }
@@ -562,6 +566,11 @@ public class PlayerMovement : MonoBehaviour
         se_jump.Play();
         if (Collider.collider.tag == "Ground") isGrounded = true;
         //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = true;
+
+        if (isGrounded && victoryAnimationTrigger)
+        {
+            StartCoroutine(VictoryAnimation());
+        }
     }
 
     void OnCollisionExit2D(Collision2D Collider)
@@ -629,5 +638,38 @@ public class PlayerMovement : MonoBehaviour
 
         isInHitstun = false;
         anim.SetBool("isInHitstun", false);
+    }
+
+    public void SetVictoryAnimationTrigger(int index = 0)
+    {
+        victoryTransitionIndex = index;
+        waiting = true;
+        if (isGrounded)
+        {
+            StartCoroutine(VictoryAnimation());
+        }
+        else
+        {
+            victoryAnimationTrigger = true;
+        }
+    }
+
+    IEnumerator VictoryAnimation()
+    {
+        anim.SetTrigger("victory");
+
+        yield return new WaitForSeconds(5f);
+
+        switch (victoryTransitionIndex)
+        {
+            case (0):
+                GameObject.Find("GameManager").GetComponent<GameManager>().Level0Clear();
+                break;
+            case (1):
+                GameObject.Find("GameManager").GetComponent<GameManager>().ChangeScene("MainMenu");
+                break;
+        }
+
+        print("DONE");
     }
 }

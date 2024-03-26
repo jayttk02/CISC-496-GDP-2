@@ -74,7 +74,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 14
   m_Sprite: {fileID: -1518255493, guid: de8fbd93c450a1f48b86286299beef13, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -134,8 +134,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   deathEffect: {fileID: 3374455099600874160, guid: 49de94fb95e705043861cd721a873b34, type: 3}
+  heartDrop: {fileID: 0}
   phase: 0
-  maximumYValue: 6
-  minimumXValue: -10
-  maximumXValue: 0
-  minimumYValue: -6
+  maximumYValue: -55
+  minimumXValue: 179
+  maximumXValue: 185
+  minimumYValue: -66

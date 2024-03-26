@@ -22,10 +22,10 @@ public class VictoryCollectable : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            se_win.Play();
+            //se_win.Play();
             print("Collected");
-            //other.gameObject.GetComponent<PlayerMovement>().EndLevel();
-            GameObject.Find("GameManager").GetComponent<GameManager>().Level0Clear();
+            other.gameObject.GetComponent<PlayerMovement>().SetVictoryAnimationTrigger(0);
+
             Destroy(this.gameObject);
         }
     }

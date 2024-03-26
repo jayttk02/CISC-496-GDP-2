@@ -117,10 +117,13 @@ public class _Enemy : MonoBehaviour
     {
         float randValue = Random.value;
         //Player Health -1 then 50% Chance of Heart Drop
-        if(HealthSystem.health <= 3 && HealthSystem.health >= 2 && randValue < .50f) Instantiate(heartDrop, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
+        if (heartDrop != null)
+        {
+            if (HealthSystem.health <= 3 && HealthSystem.health >= 2 && randValue < .50f) Instantiate(heartDrop, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
 
-        //Player Health -2
-        if (HealthSystem.health < 2) Instantiate(heartDrop, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
+            //Player Health -2
+            if (HealthSystem.health < 2) Instantiate(heartDrop, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
+        }
 
         Instantiate(deathEffect, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);     // spawn death effect when health < 0
         Destroy(this.gameObject);   // destroys gameobject

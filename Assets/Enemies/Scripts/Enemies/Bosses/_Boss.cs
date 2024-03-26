@@ -51,7 +51,10 @@ public class _Boss : _Enemy
 
     public override void OnCollisionEnter2D(Collision2D other)
     {
-        other.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-30 * other.transform.localScale.x, 0));      // (supposed to) push player back on contact
+        if (other.gameObject.tag == "Player")
+        {
+            other.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-30 * other.transform.localScale.x, 0));      // (supposed to) push player back on contact
+        }
     }
 
     public override void TakeDamage(int damageTaken)
@@ -66,5 +69,7 @@ public class _Boss : _Enemy
         base.Death();
 
         healthbarGO.SetActive(false);       // when defeated, deactivates healthbar
+
+        GameObject.Find("Player").GetComponent<PlayerMovement>().SetVictoryAnimationTrigger(1);
     }
 }

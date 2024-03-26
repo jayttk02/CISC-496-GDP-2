@@ -75,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 13
   m_Sprite: {fileID: 1920886589, guid: de8fbd93c450a1f48b86286299beef13, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -156,4 +156,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   deathEffect: {fileID: 3374455099600874160, guid: 49de94fb95e705043861cd721a873b34, type: 3}
+  heartDrop: {fileID: 0}
   timeUntilDeath: 3

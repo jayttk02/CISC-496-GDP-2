@@ -108,7 +108,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 12
   m_Sprite: {fileID: 1884393930, guid: e8fa6636b7088cc46b6e9aacc3a88f63, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -189,14 +189,15 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   deathEffect: {fileID: 3374455099600874160, guid: 1756b65fd97876a43be927466a72e98a, type: 3}
+  heartDrop: {fileID: 0}
   bossIntroDuration: 2
   isInIntro: 0
   healthbarGO: {fileID: 0}
   healthbarName: {fileID: 0}
   healthbarSlider: {fileID: 0}
   direction: -1
-  minimumXValue: -3
-  maximumXValue: 6
+  minimumXValue: 189
+  maximumXValue: 195
   minion1SpawnTimeLeft: 5
   minion2SpawnTimeLeft: 3
   minion1: {fileID: 4560535609713051452, guid: 40f2a86f2a67f8c499c7025f6836626d, type: 3}
