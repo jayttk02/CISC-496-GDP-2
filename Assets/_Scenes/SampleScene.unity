@@ -733,6 +733,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41243c12acd29e046a93a6ca5a598dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ip: 
+  mobileControls: 0
+  canMove: 0
   moveSpeed: 5
   aimSpeed: 5
   jumpSpeed: 10
@@ -741,11 +744,21 @@ MonoBehaviour:
   gunOffset: 0.75
   leg: {fileID: 1927168764}
   legOffset: 0.5
+  legHitbox: {fileID: 0}
   arm: {fileID: 1436121636}
   armOffset: 0.75
+  armHitbox: {fileID: 0}
   bullet: {fileID: 8250794043270493214, guid: 28b080f54df767f41b8dab33a0593e03, type: 3}
+  bulletTrail: {fileID: 0}
+  bulletTrail2: {fileID: 0}
   jumpDuration: 1
+  hitstunMax: 0
   duration: 2
+  se_walk: {fileID: 0}
+  se_jump: {fileID: 0}
+  se_shoot: {fileID: 0}
+  playerInputsUI: {fileID: 0}
+  aimAngle: 0
 --- !u!114 &605518846
 MonoBehaviour:
   m_ObjectHideFlags: 0
