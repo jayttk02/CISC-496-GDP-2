@@ -398,7 +398,7 @@ public class PlayerMovement : MonoBehaviour
         {
             activatePunch = Input.GetKey(KeyCode.Q) && !punching;
         }
-        if(activatePunch)
+        if(activatePunch && isGrounded)
         {
             armHitbox.ToggleActive();
             if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle_forward") || anim.GetCurrentAnimatorStateInfo(0).IsName("walk_forward"))
@@ -426,7 +426,7 @@ public class PlayerMovement : MonoBehaviour
         {
             activateKick = Input.GetKey(KeyCode.T) && !kicking;
         }
-        if(activateKick)
+        if(activateKick && isGrounded)
         {
             legHitbox.ToggleActive();
             if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle_forward") || anim.GetCurrentAnimatorStateInfo(0).IsName("walk_forward"))
