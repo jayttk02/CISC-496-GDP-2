@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject player;
+    //public GameObject player;
     public GameObject playerPrefab;
 
     [Header("Stages")]
@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     [Space(10)]
 
     public int currentCheckpoint;
-    //public bool loadLevelObjects = true;       // checked when switching scenes, meant to prevent seen from loading player twice
+    public bool startingInLevel;
 
     [Header("Volume")]
     public AudioMixer masterAM;
@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 
     void OnLevelWasLoaded()
     {
-        if (SceneManager.GetActiveScene().name != "MainMenu")
+        if (!startingInLevel && SceneManager.GetActiveScene().name != "MainMenu")
         {
             LoadLevelObjects();
         }
@@ -45,16 +45,7 @@ public class GameManager : MonoBehaviour
 
     void LoadLevelObjects()
     {
-        GameObject playerGO = player;
-        if (playerGO == null)
-        {
-            playerGO = Instantiate(playerPrefab, GameObject.Find("Checkpoints").transform.GetChild(currentCheckpoint).position, Quaternion.identity);    // spawn prefab
-        }
-        else
-        {
-            player.transform.position = GameObject.Find("Checkpoints").transform.GetChild(currentCheckpoint).position;
-        }
-        
+        GameObject playerGO = Instantiate(playerPrefab, GameObject.Find("Checkpoints").transform.GetChild(currentCheckpoint).position, Quaternion.identity);    // spawn prefab
         GameObject.Find("Main Camera").GetComponent<CameraFollow>().player = playerGO.transform;    // add new player gameobject to CameraFollow script in Main Camera
 
         PlayerMovement playerMovementScript = playerGO.GetComponent<PlayerMovement>();      // PlayerMovement script sound effects
@@ -109,7 +100,10 @@ public class GameManager : MonoBehaviour
     public void ResetScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        DontDestroyOnLoad(this.gameObject);
+        if (!startingInLevel)
+        {
+            DontDestroyOnLoad(this.gameObject);
+        }
     }
 
     public void SetVolume(string type, AudioSource _audioSource = null)
