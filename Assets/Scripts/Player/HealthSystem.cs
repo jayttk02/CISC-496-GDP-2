@@ -32,6 +32,11 @@ public class HealthSystem : MonoBehaviour
             UpdateHealth(1);
             Debug.Log(health);
         }
+        else if (other.gameObject.name == "spr_drop")
+        {
+            UpdateHealth(1);
+            Debug.Log(health);
+        }
         else if (other.gameObject.tag == "Spike"){
             health = 0;
             UpdateHealth();
