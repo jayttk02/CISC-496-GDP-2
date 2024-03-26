@@ -74,7 +74,7 @@ public class HealthSystem : MonoBehaviour
     }
 
     public void ResetScene(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        GameObject.Find("GameManager").GetComponent<GameManager>().ResetScene();    // done from gamemaanager script so it is not destroyed
     }
 
 

@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86ddf6a927da54c428f83d531331cc6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackType: 0
+  attackType: 1
   isActive: 0
   attackConnected: 0
 --- !u!212 &6893070989464621448
@@ -305,6 +305,7 @@ MonoBehaviour:
   ip: 192.168.2.37
   mobileControls: 0
   canMove: 0
+  waiting: 0
   moveSpeed: 5
   aimSpeed: 5
   jumpSpeed: 10
@@ -318,9 +319,10 @@ MonoBehaviour:
   armOffset: 0.75
   armHitbox: {fileID: 2665301683566399593}
   bullet: {fileID: 8250794043270493214, guid: 28b080f54df767f41b8dab33a0593e03, type: 3}
-  bulletTrail: {fileID: 0}
-  bulletTrail2: {fileID: 0}
+  bulletTrail: {fileID: 8250794043270493214, guid: 33f1a63f625b99f47bc19784bcf32237, type: 3}
+  bulletTrail2: {fileID: 8250794043270493214, guid: 0167d76816b0c4847a498eac105f088a, type: 3}
   jumpDuration: 0.75
+  onMovingPlatform: 0
   hitstunMax: 1
   duration: 2
   se_walk: {fileID: 0}
@@ -328,6 +330,8 @@ MonoBehaviour:
   se_shoot: {fileID: 0}
   playerInputsUI: {fileID: 6831588514992321938}
   aimAngle: 0
+  victoryAnimationTrigger: 0
+  victoryTransitionIndex: 0
 --- !u!114 &2214179409881036538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -345,6 +349,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  se_heart: {fileID: 0}
 --- !u!114 &6831588514992321938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -597,7 +602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86ddf6a927da54c428f83d531331cc6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackType: 1
+  attackType: 0
   isActive: 0
   attackConnected: 0
 --- !u!212 &2813537841646394468

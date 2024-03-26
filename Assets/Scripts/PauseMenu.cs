@@ -40,6 +40,11 @@ public class PauseMenu : MonoBehaviour
         quitMenuGO = pauseScreenGO.transform.GetChild(4).gameObject;
     }
 
+    public void SetGM(GameManager theGM)
+    {
+        gm = theGM;
+    }
+
     // Update is called once per frame
     void Update()
     {

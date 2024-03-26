@@ -6,9 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject player;
+    public GameObject playerPrefab;
+
     [Header("Stages")]
     public bool gameInProgress;
     public int highestLevelUnlocked;
+
+    [Space(10)]
+
+    public int currentCheckpoint;
+    //public bool loadLevelObjects = true;       // checked when switching scenes, meant to prevent seen from loading player twice
 
     [Header("Volume")]
     public AudioMixer masterAM;
@@ -20,6 +28,62 @@ public class GameManager : MonoBehaviour
     {
         SetVolume("Master");
         SetVolume("Music");
+
+        if (SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            LoadLevelObjects();
+        }
+    }
+
+    void OnLevelWasLoaded()
+    {
+        if (SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            LoadLevelObjects();
+        }
+    }
+
+    void LoadLevelObjects()
+    {
+        GameObject playerGO = player;
+        if (playerGO == null)
+        {
+            playerGO = Instantiate(playerPrefab, GameObject.Find("Checkpoints").transform.GetChild(currentCheckpoint).position, Quaternion.identity);    // spawn prefab
+        }
+        else
+        {
+            player.transform.position = GameObject.Find("Checkpoints").transform.GetChild(currentCheckpoint).position;
+        }
+        
+        GameObject.Find("Main Camera").GetComponent<CameraFollow>().player = playerGO.transform;    // add new player gameobject to CameraFollow script in Main Camera
+
+        PlayerMovement playerMovementScript = playerGO.GetComponent<PlayerMovement>();      // PlayerMovement script sound effects
+        playerMovementScript.se_walk = GameObject.Find("aud_walk").GetComponent<AudioSource>();
+        playerMovementScript.se_jump = GameObject.Find("aud_jump").GetComponent<AudioSource>();
+        playerMovementScript.se_shoot = GameObject.Find("aud_bullet").GetComponent<AudioSource>();
+
+        HealthSystem healthSystemScript = playerGO.GetComponent<HealthSystem>();    // HealthSystem script sound effects
+        healthSystemScript.se_hit = GameObject.Find("aud_hit").GetComponent<AudioSource>();
+        healthSystemScript.se_heart = GameObject.Find("aud_heart").GetComponent<AudioSource>();
+        Transform healthPointUITransform = GameObject.Find("Health").transform;                     // get Health UI gameobject
+        healthSystemScript.healthPointAnimators = new Animator[healthPointUITransform.childCount];  // set HP animators in HealthSystem script
+        for (int i = 0; i < healthPointUITransform.childCount; i++)
+        {
+            healthSystemScript.healthPointAnimators[i] = healthPointUITransform.GetChild(i).GetComponent<Animator>();
+        }
+
+        PlayerInputsUI playerInputsUIScript = playerGO.GetComponent<PlayerInputsUI>();      // playerInputsUIScript script sound effects
+        playerInputsUIScript.uiTransform = GameObject.Find("PlayerInputs").transform;
+        playerInputsUIScript.uiAnimator = GameObject.Find("PlayerInputs").GetComponent<Animator>();
+
+        Transform checkpointsTransform = GameObject.Find("Checkpoints").transform;
+        for (int i = 0; i < checkpointsTransform.childCount; i++)
+        {
+            checkpointsTransform.GetChild(i).GetComponent<Checkpoint>().Setup(this, i);
+        }
+
+        // OTHER //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        GameObject.Find("Main Camera").GetComponent<PauseMenu>().SetGM(this);
     }
 
     public void ChangeScene(string sceneName)
@@ -37,6 +101,14 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
+        currentCheckpoint = 0;
+
+        DontDestroyOnLoad(this.gameObject);
+    }
+
+    public void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         DontDestroyOnLoad(this.gameObject);
     }
 
@@ -98,6 +170,14 @@ public class GameManager : MonoBehaviour
                 break;
         }
         SetVolume(type);
+    }
+
+    public void UpdateCurrentCheckpoint(int index)
+    {
+        if (index > currentCheckpoint)
+        {
+            currentCheckpoint = index;
+        }
     }
 
     public void NewGame()

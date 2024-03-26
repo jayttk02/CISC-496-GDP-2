@@ -22,7 +22,9 @@ public class RopeGrab : MonoBehaviour
         } else {
             GetComponent<BoxCollider2D>().enabled = true;
         }
-        if (!GameObject.Find("Player").GetComponent<PlayerMovement>().isgrabbing()) {
+
+        if (GameObject.Find("Player") == null) { }  // used to prevent errors
+        else if (!GameObject.Find("Player").GetComponent<PlayerMovement>().isgrabbing()) {
             activate = false;
         }
     }
