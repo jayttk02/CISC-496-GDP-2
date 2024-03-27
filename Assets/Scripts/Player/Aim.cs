@@ -24,7 +24,8 @@ public class Aim : MonoBehaviour
         bool forward = anim.GetCurrentAnimatorStateInfo(0).IsName("idle_forward") ||
                        anim.GetCurrentAnimatorStateInfo(0).IsName("walk_forward") ||
                        anim.GetCurrentAnimatorStateInfo(0).IsName("punch_forward") ||
-                       anim.GetCurrentAnimatorStateInfo(0).IsName("kick_forward");
+                       anim.GetCurrentAnimatorStateInfo(0).IsName("kick_forward") ||
+                       anim.GetCurrentAnimatorStateInfo(0).IsName("attempting_jump_forward");
         if (mobileControls)
         {
             float angle = playerMovement.aimAngle;
