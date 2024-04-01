@@ -14,7 +14,7 @@ public class Obstacle : MonoBehaviour
     {
         if (obstacle == "fall")
         {
-            this.gameObject.GetComponent<Rigidbody2D>().gravityScale = 4;
+            this.gameObject.GetComponent<Rigidbody2D>().gravityScale = 1;
             duration = 3f;
         }
     }
@@ -27,7 +27,7 @@ public class Obstacle : MonoBehaviour
         //Reset Fall position if it has hit floor or player
         if (duration <= 0 && resetObj == true)
         {
-            duration = 3f;
+            duration = 5f;
             resetObj = false;
             this.gameObject.transform.position = startLoc.transform.position;
         }
