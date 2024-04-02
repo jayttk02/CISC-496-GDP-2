@@ -34,7 +34,7 @@ export function punch(webSocket){ return createButton("PUNCH", "red", webSocket,
 
 export function stepForward(webSocket){ return createButton("STEP\nFORWARD", "green", webSocket, "sf", false, "sfend"); }
 
-export function player1Jump(webSocket){ return createButton("JUMP", "pink", webSocket, "1j"); }
+export function player1Jump(webSocket){ return createButton("JUMP", "largepink", webSocket, "1j"); }
 
 export function shoot(webSocket){ return createButton("SHOOT", "yellow", webSocket, "s"); }
 
