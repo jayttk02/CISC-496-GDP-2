@@ -32,7 +32,7 @@ function createLabel(text){
 
 export function punch(webSocket){ return createButton("PUNCH", "red", webSocket, "p"); }
 
-export function stepForward(webSocket){ return createButton("STEP FORWARD", "green", webSocket, "sf", false, "sfend"); }
+export function stepForward(webSocket){ return createButton("STEP\nFORWARD", "green", webSocket, "sf", false, "sfend"); }
 
 export function player1Jump(webSocket){ return createButton("JUMP", "pink", webSocket, "1j"); }
 
@@ -40,6 +40,6 @@ export function shoot(webSocket){ return createButton("SHOOT", "yellow", webSock
 
 export function kick(webSocket){ return createButton("KICK", "orange", webSocket, "k"); }
 
-export function stepBackward(webSocket){ return createButton("STEP BACKWARD", "green", webSocket, "sb", false, "sbend"); }
+export function stepBackward(webSocket){ return createButton("STEP\nBACKWARD", "green", webSocket, "sb", false, "sbend"); }
 
 export function player2Jump(webSocket){ return createButton("JUMP", "pink", webSocket, "2j"); }

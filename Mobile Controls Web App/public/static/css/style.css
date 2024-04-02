@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "Pixelify";
+    src: url('../fonts/PixelifySans-Regular.ttf') format('truetype');
+  }
+
 .container{
     display: grid;
     grid-template-columns: 50% 50%;
@@ -25,12 +30,14 @@ body {
   }
 
 .block {
-    border-radius: 0.5em 0.5em 0.5em 0.5em;
-    /* margin: 1% 1% 1% 1%; */
-    padding: 1em 1em 1em 1em;
-    font-family: 'Courier New';
-    font-size: 1.2em;
-    font-weight: 800;
+    background-repeat: no-repeat;  
+    background-position: 0% 0%;
+    background-size: 100% 100%;
+    color: white;
+    margin: 0% 0% 0% 0%;
+    font-family: 'Pixelify';
+    /* TODO: UPDATE TO TAKE INTO ACCOUNT THE MOBILE VIEWPORT (at least I think this is the issue causing weird font scaling on mobile devices).  */
+    font-size: 5dvh;
     text-align: center;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -41,43 +48,31 @@ body {
 }
 
 .block.red {
-    background-color: #dc3333;
-    color: #680202;
+    background-image: url('../images/red_button.png');
 }
 
 .block.orange {
-    background-color: #ff8725;
-    color: #743400;
+    background-image: url('../images/orange_button.png');
 }
 
 .block.yellow {
-    background-color: #ffe063;
-    color: #5a6802;
+    background-image: url('../images/yellow_button.png');
 }
 
 .block.green {
-    background-color: #82ff63;
-    color: #02682b;
+    background-image: url('../images/green_button.png');
 }
 
 .block.blue {
-    background-color: aqua;
-    color: darkblue;
+    background-image: url('../images/blue_button.png');
 }
 
-.block.purple {
-    background-color: rgb(176, 112, 216);
-    color: rgb(46, 9, 69);
-}
-
-.block.darkblue {
-    background-color: rgb(17, 164, 255);
-    color:rgb(9, 13, 69);
+.block.largepink {
+    background-image: url('../images/large_pink_button.png');
 }
 
 .block.pink {
-    background-color: rgb(255, 129, 209);
-    color: rgb(109, 10, 103);
+    background-image: url('../images/pink_button.png');
 }
 
 .block:active {
