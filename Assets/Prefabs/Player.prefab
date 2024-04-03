@@ -308,7 +308,7 @@ MonoBehaviour:
   waiting: 0
   moveSpeed: 5
   aimSpeed: 5
-  jumpSpeed: 10
+  jumpSpeed: 1.5
   player_rigidbody: {fileID: 6093707600777130654}
   gun: {fileID: 9158546162330321906}
   gunOffset: 0.75

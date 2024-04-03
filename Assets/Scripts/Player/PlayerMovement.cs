@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
 using WebSocketSharp;
 
 public class PlayerMovement : MonoBehaviour
@@ -16,10 +15,10 @@ public class PlayerMovement : MonoBehaviour
     private float startSpeed;
     public float moveSpeed = 5f;
     public float aimSpeed = 5f;
-    public float jumpSpeed = 20f;
+    public float jumpSpeed = 1.2f;
     public Rigidbody2D player_rigidbody;
-    private Vector2 movement;
-    private bool isGrounded;
+    public Vector2 movement;
+    public bool isGrounded = true;
     public GameObject gun;
     public float gunOffset = 0.75f;
     public GameObject leg;
@@ -213,7 +212,9 @@ public class PlayerMovement : MonoBehaviour
                 }
                 if(player1Jump && !isInHitstun)
                 {
-                    if (isGrounded && !isInHitstun) {
+                    if (isGrounded && !isInHitstun)
+                    {
+                        jumpingUp = true;
                         StartCoroutine(Jump());
                         //playerInputsUI.JumpUpdate();
                     }
@@ -521,10 +522,18 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
+        if (jumpingUp)
+        {
+            movement.y = jumpSpeed;
+        }
+        else
+        {
+            movement.y = 0;
+        }
 
         if (onMovingPlatform)
         {
-            transform.position = new Vector2(transform.position.x + movement.x * moveSpeed * Time.fixedDeltaTime, transform.position.y);
+            transform.position = new Vector2(transform.position.x + movement.x * moveSpeed * Time.fixedDeltaTime, transform.position.y + movement.y * moveSpeed * Time.fixedDeltaTime);
         }
         else
         {
@@ -572,21 +581,35 @@ public class PlayerMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D Collider)
     {
-        se_jump.Play();
-        if (Collider.collider.tag == "Ground" || transform.position.y > Collider.transform.position.y) isGrounded = true;
+        
+        if (Collider.collider.tag == "Ground" || transform.position.y > Collider.transform.position.y)
+        {
+            isGrounded = true;  
+        }
         //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = true;
-
+        
         if (isGrounded && victoryAnimationTrigger)
         {
             StartCoroutine(VictoryAnimation());
         }
     }
 
-    void OnCollisionExit2D(Collision2D Collider)
-    {
-        if (Collider.collider.tag == "Ground" || transform.position.y > Collider.transform.position.y) isGrounded = false;
-        //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = false;
-    }
+    // private void OnCollisionStay2D(Collision2D Collider)
+    // {
+    //     if (!jumpingUp)
+    //     {
+    //         if (Collider.collider.tag == "Ground" || transform.position.y > Collider.transform.position.y)
+    //         {
+    //             isGrounded = true;  
+    //         }
+    //     }
+    // }
+
+    // void OnCollisionExit2D(Collision2D Collider)
+    // {
+    //     if (Collider.collider.tag == "Ground" || Collider.collider.tag == "Platform") isGrounded = false;
+    //     //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = false;
+    // }
 
     void ResetObj()
     {
@@ -609,9 +632,12 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator Jump()
     {
-        GetComponent<Rigidbody2D>().gravityScale = -17;
+        se_jump.Play();
+        isGrounded = false;
+        // GetComponent<Rigidbody2D>().gravityScale = -17;
         yield return new WaitForSeconds(jumpDuration);
-        GetComponent<Rigidbody2D>().gravityScale = 20;
+        // isGrounded = true;
+        // GetComponent<Rigidbody2D>().gravityScale = 20;
         jumpingUp = false;
         jump1Occurring = false;
         jump2Occurring = false;

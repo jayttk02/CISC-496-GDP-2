@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -33,16 +34,14 @@ public class MovingPlatform : MonoBehaviour
         if (other.transform.position.y > transform.position.y)
         {
             other.transform.parent = transform;
+            
             other.gameObject.GetComponent<PlayerMovement>().onMovingPlatform = true;
         }
     }
 
     private void OnCollisionExit2D(Collision2D other) {
-        if (other.transform.position.y > transform.position.y)
-        {
-            other.transform.SetParent(null);
-            other.gameObject.GetComponent<PlayerMovement>().onMovingPlatform = false;
-        }
+        other.transform.SetParent(null);
+        other.gameObject.GetComponent<PlayerMovement>().onMovingPlatform = false;
     }
 
 }
