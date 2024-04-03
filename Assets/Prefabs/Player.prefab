@@ -181,7 +181,7 @@ Transform:
   m_GameObject: {fileID: 2887832949154654780}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 20.44, y: 0.16, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 0}
+  m_LocalScale: {x: 4, y: 4, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4079235717946641858}
@@ -310,6 +310,8 @@ MonoBehaviour:
   aimSpeed: 5
   jumpSpeed: 1.5
   player_rigidbody: {fileID: 6093707600777130654}
+  movement: {x: 0, y: 0}
+  isGrounded: 1
   gun: {fileID: 9158546162330321906}
   gunOffset: 0.75
   leg: {fileID: 0}

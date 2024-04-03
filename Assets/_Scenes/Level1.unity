@@ -651,6 +651,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4619770665853026481, guid: 802b2d701039e794ab4deacf3c111d89, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8552606780598248785, guid: 802b2d701039e794ab4deacf3c111d89, type: 3}
       propertyPath: m_RootOrder
       value: 13
@@ -71775,6 +71779,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1092280762323268626, guid: 4729304b7442c524b84f53d3a026cb99, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1199164627852400910, guid: 4729304b7442c524b84f53d3a026cb99, type: 3}
       propertyPath: m_Name
       value: GunCollectable
