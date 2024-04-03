@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyName: Bad Box
-  health: 10
+  health: 2
   speed: 0.01
   _animator: {fileID: 0}
   _rigidbody: {fileID: 0}

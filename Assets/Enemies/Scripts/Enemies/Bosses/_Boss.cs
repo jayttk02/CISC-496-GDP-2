@@ -60,7 +60,14 @@ public class _Boss : _Enemy
 
     public override void TakeDamage(int damageTaken)
     {
-        base.TakeDamage(damageTaken);
+        if (!isInIntro)
+        {
+            base.TakeDamage(damageTaken);
+        }
+        else
+        {
+            StartCoroutine(NoDamageFlash());
+        }
 
         healthbarSlider.value = health;     // updates healthbar
     }
@@ -71,6 +78,6 @@ public class _Boss : _Enemy
 
         healthbarGO.SetActive(false);       // when defeated, deactivates healthbar
 
-        GameObject.Find("Player").GetComponent<PlayerMovement>().SetVictoryAnimationTrigger(1);
+        GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerMovement>().SetVictoryAnimationTrigger(1);
     }
 }
