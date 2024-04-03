@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,7 @@ public class _Boss : _Enemy
 
     [Space(10)]
     public GameObject healthbarGO;      // the parent gameobject of the boss name healthbar
-    public Text healthbarName;          // text object for boss name
+    public TextMeshProUGUI healthbarName;          // text object for boss name
     public Slider healthbarSlider;      // slider for boss health
 
     // Start is called before the first frame update
@@ -19,7 +20,7 @@ public class _Boss : _Enemy
     {
         base.Start();
 
-        healthbarName = healthbarGO.transform.GetChild(0).GetComponent<Text>();
+        healthbarName = healthbarGO.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         healthbarName.text = enemyName;
         healthbarSlider = healthbarGO.transform.GetChild(1).GetComponent<Slider>();
         healthbarSlider.maxValue = health;

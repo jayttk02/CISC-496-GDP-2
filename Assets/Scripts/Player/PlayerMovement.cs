@@ -564,7 +564,7 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionEnter2D(Collision2D Collider)
     {
         se_jump.Play();
-        if (Collider.collider.tag == "Ground") isGrounded = true;
+        if (Collider.collider.tag == "Ground" || transform.position.y > Collider.transform.position.y) isGrounded = true;
         //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = true;
 
         if (isGrounded && victoryAnimationTrigger)
@@ -575,7 +575,7 @@ public class PlayerMovement : MonoBehaviour
 
     void OnCollisionExit2D(Collision2D Collider)
     {
-        if (Collider.collider.tag == "Ground") isGrounded = false;
+        if (Collider.collider.tag == "Ground" || transform.position.y > Collider.transform.position.y) isGrounded = false;
         //if (Collider.collider.gameObject.name == "Tilemap") isGrounded = false;
     }
 

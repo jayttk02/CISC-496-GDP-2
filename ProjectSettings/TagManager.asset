@@ -11,6 +11,7 @@ TagManager:
   - Spike
   - Radius
   - Bonus_Heart
+  - Platform
   layers:
   - Default
   - TransparentFX
