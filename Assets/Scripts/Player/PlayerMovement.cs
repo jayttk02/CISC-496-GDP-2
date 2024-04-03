@@ -521,7 +521,16 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        player_rigidbody.MovePosition(player_rigidbody.position + movement * moveSpeed * Time.fixedDeltaTime);
+
+        if (onMovingPlatform)
+        {
+            transform.position = new Vector2(transform.position.x + movement.x * moveSpeed * Time.fixedDeltaTime, transform.position.y);
+        }
+        else
+        {
+            player_rigidbody.MovePosition(player_rigidbody.position + movement * moveSpeed * Time.fixedDeltaTime);
+        }
+
         if (movement.x > 0) 
         {
             //if (!kicking) {
