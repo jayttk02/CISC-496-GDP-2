@@ -26,4 +26,13 @@ public class Projectile : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
+    public virtual void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            other.gameObject.GetComponent<HealthSystem>().UpdateHealth(1);
+            Destroy(this.gameObject);
+        }
+    }
 }

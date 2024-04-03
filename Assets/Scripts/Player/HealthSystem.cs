@@ -44,6 +44,10 @@ public class HealthSystem : MonoBehaviour
         else if (other.gameObject.tag == "Bonus_Heart")
         {       
             health++;
+            if (health > healthPointAnimators.Length)
+            {
+                health = healthPointAnimators.Length;
+            }
             se_heart.Play();
             UpdateHealth(-1);
             Destroy(other.gameObject);

@@ -18,6 +18,11 @@ public class BulletHitbox : MonoBehaviour
         {
             //col.transform.parent.GetComponent<_Enemy>().BulletCollision(1);
         }
+        else if (col.tag == "Projectile")
+        {
+            Destroy(col.gameObject);
+            Destroy(this.gameObject);
+        }
     }
 
 }
