@@ -579,10 +579,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D Collider)
+    void OnCollisionStay2D(Collision2D Collider)
     {
-        
-        if (Collider.collider.tag == "Ground" || transform.position.y > Collider.transform.position.y)
+        if (Collider.collider.tag == "Ground" || Collider.collider.tag == "Platform") //|| transform.position.y > Collider.transform.position.y)
         {
             isGrounded = true;  
         }
