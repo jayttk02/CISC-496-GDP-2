@@ -5,7 +5,6 @@ const expressip = require('express-ip');
 const express = require('express');
 
 var ips = new Map();
-var players = 0;
 var level = 2;
 const maxPlayers = 2;
 const controls = new Map([
@@ -41,11 +40,10 @@ var wss = new WebSocketServer({
 
 wss.on('connection', function connection(ws, req) { 
  var ip = req.socket.remoteAddress;
- console.log('New client' + ip +  ' connected!')
+ console.log('New client ' + ip +  ' connected!')
  ws.send('connection established')
  ws.on('close', () => {
-  console.log('Client' + ip + ' has disconnected!');
-  players -= 1;
+  console.log('Client ' + ip + ' has disconnected!');
   ips.delete(ip);
   console.log(ips);
 })
@@ -62,8 +60,8 @@ wss.on('connection', function connection(ws, req) {
    }
    else if(data == "want # players"){
     wss.clients.forEach(client => {
-      console.log(`distributing message: players: ${players}`)
-      client.send(`players: ${players}`)
+      console.log(`distributing message: players: ${ips.size}`)
+      client.send(`players: ${ips.size}`)
     });
    }
  })
@@ -79,15 +77,11 @@ app.post('/', function (req, res) {
 
 app.get('/play', function (req, res) {
     const ip = req.ipInfo["ip"];
-    players += 1;
-    if(players > maxPlayers){
+    if(ips.size > maxPlayers){
         res.sendStatus(404);
     }
     else{
-      ips.set(ip, players);
-    }
-
-    if(players <= maxPlayers){
+      ips.set(ip, ips.size + 1);
       res.render(String(controls.get(ips.get(ip))), {level: level});
     }
     console.log(ips);
