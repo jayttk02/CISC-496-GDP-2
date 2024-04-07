@@ -62,3 +62,4 @@ The keyboard controls are also listed here:
 * Kick: T
 * Punch: Q
 * Jump: C and V 
+* Pause: Esc (on both keyboard and mobile controls)
