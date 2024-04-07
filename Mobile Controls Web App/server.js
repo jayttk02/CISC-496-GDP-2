@@ -15,6 +15,7 @@ const controls = new Map([
 
 var privateKey  = fs.readFileSync('key.pem', 'utf8');
 var certificate = fs.readFileSync('cert.pem', 'utf8');
+var ip = fs.readFileSync(path.join(__dirname, 'public', 'ip.txt'));
 
 var credentials = {key: privateKey, cert: certificate};
 
@@ -30,7 +31,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 //pass in your express app and credentials to create an https server
 var httpsServer = https.createServer(credentials, app);
-httpsServer.listen(8443, "10.216.112.17");
+httpsServer.listen(8443, ip);
 
 var WebSocket = require('ws');
 var WebSocketServer = WebSocket.Server;
@@ -38,10 +39,16 @@ var wss = new WebSocketServer({
     server: httpsServer
   });
 
-wss.on('connection', function connection(ws) { 
- console.log('New client connected!')
+wss.on('connection', function connection(ws, req) { 
+ var ip = req.socket.remoteAddress;
+ console.log('New client' + ip +  ' connected!')
  ws.send('connection established')
- ws.on('close', () => console.log('Client has disconnected!'))
+ ws.on('close', () => {
+  console.log('Client' + ip + ' has disconnected!');
+  players -= 1;
+  ips.delete(ip);
+  console.log(ips);
+})
  ws.on('message', data => {
    wss.clients.forEach(client => {
      console.log(`distributing message: ${data}`)
@@ -72,15 +79,14 @@ app.post('/', function (req, res) {
 
 app.get('/play', function (req, res) {
     const ip = req.ipInfo["ip"];
-    if(!ips.has(ip)){
-        players += 1;
-        if(players > maxPlayers){
-            res.sendStatus(404);
-        }
-        else{
-          ips.set(ip, players);
-        }
+    players += 1;
+    if(players > maxPlayers){
+        res.sendStatus(404);
     }
+    else{
+      ips.set(ip, players);
+    }
+
     if(players <= maxPlayers){
       res.render(String(controls.get(ips.get(ip))), {level: level});
     }

@@ -1,5 +1,17 @@
+var ip = await fetch('ip.txt').then(res => res.text());
+
 function createSocket(){
-    const webSocket = new WebSocket('wss://10.216.112.17:8443/');
+    // var ip;
+
+    // fetch('ip.txt')
+    // .then(response => response.text())
+    // .then((data) => {
+    //   ip = data;
+    // })
+
+    
+
+    const webSocket = new WebSocket('wss://' + ip + ':8443/');
     webSocket.onmessage = (event) => {
         console.log(event);
         console.log('Message from server: ' + event.data + "<br>");
