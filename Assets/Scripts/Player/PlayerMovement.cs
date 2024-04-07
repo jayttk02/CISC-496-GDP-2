@@ -6,8 +6,8 @@ using WebSocketSharp;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public string ip;
-    public bool mobileControls;
+    private string ip;
+    public bool mobileControls = true;
     public bool canMove;        // set to false if player is not supposed to be allowed to move (boss intros, etc.)
     public bool waiting;        // if player is waiting for scripted event to end (boss intros, etc.)
 
@@ -88,12 +88,11 @@ public class PlayerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         if (mobileControls)
         {
-            wss = new WebSocket("wss://"+ ip + ":8443");
+            wss = new WebSocket("wss://"+ GameObject.FindGameObjectWithTag("Game Manager").GetComponent<GameManager>().IP + ":8443");
             wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
             wss.Connect();
             wss.OnMessage += (sender, e) =>
             {
-                // Debug.Log("Message Received from "+((WebSocket)sender).Url+", Data : "+e.Data);
                 if (socketMap.ContainsKey(e.Data))
                 {
                     socketMap[e.Data] = true;

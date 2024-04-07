@@ -12,6 +12,7 @@ TagManager:
   - Radius
   - Bonus_Heart
   - Platform
+  - Game Manager
   layers:
   - Default
   - TransparentFX

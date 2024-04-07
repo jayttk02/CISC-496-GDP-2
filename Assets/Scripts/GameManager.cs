@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    //public GameObject player;
     public GameObject playerPrefab;
+    public string IP;
 
     [Header("Stages")]
     public bool gameInProgress;

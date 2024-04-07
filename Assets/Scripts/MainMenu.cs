@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -26,13 +27,12 @@ public class MainMenu : MonoBehaviour
     Animator fadeOutAnimator;
 
     [Space(10)]
-    public string ip;
-    private WebSocket wss;
-    private IDictionary<string, bool> socketMap = new Dictionary<string, bool>();
     public int numberOfPlayers;
     public int minNumberOfPlayers;
 
     private bool ready;
+    private WebSocket wss;
+    private IDictionary<string, bool> socketMap = new Dictionary<string, bool>();
     
     // Start is called before the first frame update
     void Start()
@@ -57,7 +57,22 @@ public class MainMenu : MonoBehaviour
         MainMenuOpen(true);
         StageSelectOpen(false);
         SettingsOpen(false);
+    }
 
+    IEnumerator CheckForPlayers()
+    {
+        wss.Send("want # players");
+        yield return new WaitForSeconds(3);
+        if (!ready)
+        {
+            StartCoroutine(CheckForPlayers());
+        }
+    }
+
+    void ConnectToWebSocket()
+    {
+        string ip = canvas.GetChild(3).GetChild(3).GetChild(1).GetComponent<TMP_InputField>().text;
+        gm.IP = ip;
         wss = new WebSocket("wss://" + ip + ":8443");
         wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
         wss.Connect();
@@ -69,16 +84,6 @@ public class MainMenu : MonoBehaviour
             }
         };
         StartCoroutine(CheckForPlayers());
-    }
-
-    IEnumerator CheckForPlayers()
-    {
-        wss.Send("want # players");
-        yield return new WaitForSeconds(3);
-        if (!ready)
-        {
-            StartCoroutine(CheckForPlayers());
-        }
     }
 
     void Update()
@@ -109,6 +114,9 @@ public class MainMenu : MonoBehaviour
                 break;
             case (3):
                 Application.Quit();
+                break;
+            case (4):
+                ConnectToWebSocket();
                 break;
         }
     }
