@@ -14,7 +14,7 @@
 3. Clone this project and navigate to the "Mobile Controls Web App" folder, then to the "public" subfolder. Open "ip.txt" in any text editor.
 4. Now, you will need your local IP address in order to run the server. On Windows, you can easily access this by running "ipconfig" and copying the address next to IPv4. Still in the "Mobile Controls Web App" folder, replace the contents of "ip.txt" with your local IP address and save the file.
 5. Use Node to run "server.js". You can do this with "node server.js" or by using VSCode and executing the file.
-6. On any device connected to the same network (e.g. the machine running the server), navigate to "https://[your local IP address]:8443. You should see a blue button that says "START." Note that you will have to click through a security warning because the site uses a self-signed certificate. In the terminal where Node JS executes, you should see your IP address mapped to the player number (player 1 or player 2) along with "New client connected!":
+6. On any device connected to the same network (e.g. the machine running the server), navigate to `https://[your local IP address]:8443`. You should see a blue button that says "START." Note that you will have to click through a security warning because the site uses a self-signed certificate. In the terminal where Node JS executes, you should see your IP address mapped to the player number (player 1 or player 2) along with "New client connected!":
 
 ![alt text](image.png) 
 
@@ -41,6 +41,7 @@ The number of players connected will match the number of connected IPs on the se
 **Note that the game only allows a maximum of two players for security reasons. Any additional devices that try to join will be served a 404 page.**
 
 ## Troubleshooting
+* When loading the site, ensure you have the correct port number and that `https://` is part of the URL.
 * If using Queen's wifi, don't use eduroam (I think there are additional firewalls). The game was tested on Queen'sU-Secure (unsure about other wifi networks). It should also work on your network at home.
 * Ensure you have a strong wifi connection and that you can load pages other than the controls site.
 * Make sure the devices are all connected to the same network.
