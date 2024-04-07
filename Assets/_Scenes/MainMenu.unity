@@ -6705,7 +6705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 25080084331358086, guid: 802b2d701039e794ab4deacf3c111d89, type: 3}
       propertyPath: gameInProgress
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 25080084331358086, guid: 802b2d701039e794ab4deacf3c111d89, type: 3}
       propertyPath: masterVolumeOn
@@ -6713,7 +6713,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 25080084331358086, guid: 802b2d701039e794ab4deacf3c111d89, type: 3}
       propertyPath: highestLevelUnlocked
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4619770665853026481, guid: 802b2d701039e794ab4deacf3c111d89, type: 3}
       propertyPath: m_Name
