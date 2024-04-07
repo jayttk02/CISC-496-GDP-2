@@ -4,7 +4,7 @@ const path = require('path');
 const expressip = require('express-ip');
 const express = require('express');
 
-var ips = new Map();
+var ips = [];
 var level = 2;
 const maxPlayers = 2;
 const controls = new Map([
@@ -44,7 +44,11 @@ wss.on('connection', function connection(ws, req) {
  ws.send('connection established')
  ws.on('close', () => {
   console.log('Client ' + ip + ' has disconnected!');
-  ips.delete(ip);
+  // ips.delete(ip);
+  const index = ips.indexOf(ip);
+  if (index > -1) { // only splice array when item is found
+    ips.splice(index, 1); // 2nd parameter means remove one item only
+  }
   console.log(ips);
 })
  ws.on('message', data => {
@@ -60,8 +64,8 @@ wss.on('connection', function connection(ws, req) {
    }
    else if(data == "want # players"){
     wss.clients.forEach(client => {
-      console.log(`distributing message: players: ${ips.size}`)
-      client.send(`players: ${ips.size}`)
+      console.log(`distributing message: players: ${ips.length}`)
+      client.send(`players: ${ips.length}`)
     });
    }
  })
@@ -77,12 +81,12 @@ app.post('/', function (req, res) {
 
 app.get('/play', function (req, res) {
     const ip = req.ipInfo["ip"];
-    if(ips.size > maxPlayers){
+    if(ips.length > maxPlayers){
         res.sendStatus(404);
     }
     else{
-      ips.set(ip, ips.size + 1);
-      res.render(String(controls.get(ips.get(ip))), {level: level});
+      ips.push(ip);
+      res.render(String(controls.get(ips.indexOf(ip) + 1)), {level: level});
     }
     console.log(ips);
   });

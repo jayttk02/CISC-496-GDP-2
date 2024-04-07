@@ -49,6 +49,7 @@ The number of players connected will match the number of connected IPs on the se
 * Don't have cellular data enabled on the mobile devices, this seems to interfere with the fact that the mobile devices must be connected to the same network.
 * If you have any antiviruses enabled, disable them.
 * Ensure the device being used as player 1 supports orientation data. If it doesn't, you will get an alert saying "DeviceMotionEvent not defined."
+* Try restarting the server.
 
 ## If all else fails
 
