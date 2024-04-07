@@ -71,19 +71,29 @@ public class MainMenu : MonoBehaviour
 
     void ConnectToWebSocket()
     {
-        string ip = canvas.GetChild(3).GetChild(3).GetChild(1).GetComponent<TMP_InputField>().text;
+        Transform ipConnect = canvas.GetChild(3).GetChild(3);
+        string ip = ipConnect.GetChild(1).GetComponent<TMP_InputField>().text;
         gm.IP = ip;
-        wss = new WebSocket("wss://" + ip + ":8443");
-        wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
-        wss.Connect();
-        wss.OnMessage += (sender, e) =>
+        try
         {
-            if (e.Data.Substring(0, 9) == "players: ")
+            wss = new WebSocket("wss://" + ip + ":8443");
+            ipConnect.GetChild(3).gameObject.SetActive(true);
+            ipConnect.GetChild(4).gameObject.SetActive(false);
+            wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+            wss.Connect();
+            wss.OnMessage += (sender, e) =>
             {
-                numberOfPlayers = int.Parse(e.Data.Substring(9), System.Globalization.CultureInfo.InvariantCulture);
-            }
-        };
-        StartCoroutine(CheckForPlayers());
+                if (e.Data.Substring(0, 9) == "players: ")
+                {
+                    numberOfPlayers = int.Parse(e.Data.Substring(9), System.Globalization.CultureInfo.InvariantCulture);
+                }
+            };
+            StartCoroutine(CheckForPlayers());
+        }
+        catch (Exception e)
+        {
+            ipConnect.GetChild(4).gameObject.SetActive(true);
+        }
     }
 
     void Update()
