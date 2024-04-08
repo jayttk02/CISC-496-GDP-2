@@ -8,13 +8,14 @@ public class Aim : MonoBehaviour
     private PlayerMovement playerMovement;
     private bool mobileControls;
     private Animator anim;
-    // private bool flipped;
+    private GameManager gm;
     
     // Start is called before the first frame update
     void Start()
     {
         playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
-        mobileControls = playerMovement.mobileControls;
+        gm = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<GameManager>();
+        mobileControls = gm.mobileControls;
         anim = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
     }
 

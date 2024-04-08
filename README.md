@@ -45,7 +45,7 @@ The number of players connected will match the number of connected IPs on the se
 * If using Queen's wifi, don't use eduroam (I think there are additional firewalls). The game was tested on Queen'sU-Secure (unsure about other wifi networks). It should also work on your network at home.
 * Ensure you have a strong wifi connection and that you can load pages other than the controls site.
 * Make sure the devices are all connected to the same network.
-* Sometimes, the page needs to be refreshed on the mobile devices to register the change in orientation data permissions and/or the change in players. You should then see the stream of numbers output after a refresh of the device registered to player 1.
+* Sometimes, the page needs to be refreshed (or the browser     quit and open again) on the mobile devices to register the change in orientation data permissions and/or the change in players. You should then see the stream of numbers output after a refresh of the device registered to player 1.
 * Don't have cellular data enabled on the mobile devices, this seems to interfere with the fact that the mobile devices must be connected to the same network.
 * If you have any antiviruses enabled, disable them.
 * Ensure the device being used as player 1 supports orientation data. If it doesn't, you will get an alert saying "DeviceMotionEvent not defined."

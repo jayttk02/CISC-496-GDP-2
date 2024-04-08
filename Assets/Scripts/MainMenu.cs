@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour
     GameManager gm;
     public Transform canvas;
 
+    private GameObject playerText;
     TextMeshProUGUI playerCountText;
     Animator playerCountAnimator;
 
@@ -24,6 +25,13 @@ public class MainMenu : MonoBehaviour
     GameObject settingsMenuGO;
     public TextMeshProUGUI[] settingsMenuButtonTexts;
 
+    private Transform ipConnect;
+    private GameObject connectionSuccessful;
+    private GameObject connectionFailed;
+    
+    private Button mobileControlsButton;
+    private TextMeshProUGUI mobileControlsSettingText;
+
     Animator fadeOutAnimator;
 
     [Space(10)]
@@ -31,6 +39,8 @@ public class MainMenu : MonoBehaviour
     public int minNumberOfPlayers;
 
     private bool ready;
+    private bool connected;
+    private bool attemptedConnection;
     private WebSocket wss;
     private IDictionary<string, bool> socketMap = new Dictionary<string, bool>();
     
@@ -40,6 +50,7 @@ public class MainMenu : MonoBehaviour
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         Time.timeScale = 1;         // when loading from level pause screen
 
+        playerText = canvas.GetChild(2).gameObject;
         playerCountText = canvas.GetChild(2).GetChild(1).GetComponent<TextMeshProUGUI>();
         playerCountAnimator = canvas.GetChild(2).GetComponent<Animator>();
 
@@ -53,32 +64,49 @@ public class MainMenu : MonoBehaviour
         settingsMenuGO = canvas.GetChild(5).gameObject;
 
         fadeOutAnimator = canvas.GetChild(6).gameObject.GetComponent<Animator>();
+        
+        ipConnect = canvas.GetChild(3).GetChild(3);
+        connectionSuccessful = ipConnect.GetChild(3).gameObject;
+        connectionFailed = ipConnect.GetChild(4).gameObject;
+
+        mobileControlsButton = canvas.GetChild(3).GetChild(4).GetChild(1).GetComponent<Button>();
+        mobileControlsSettingText = canvas.GetChild(3).GetChild(4).GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>();
 
         MainMenuOpen(true);
         StageSelectOpen(false);
         SettingsOpen(false);
     }
 
+    void SetConnection(bool connected)
+    {
+        connectionSuccessful.SetActive(connected);
+        connectionFailed.SetActive(!connected);
+    }
+
     IEnumerator CheckForPlayers()
     {
-        wss.Send("want # players");
-        yield return new WaitForSeconds(3);
-        if (!ready)
+        try
         {
-            StartCoroutine(CheckForPlayers());
+            wss.Send("want # players");
         }
+        catch
+        {
+            connected = false;
+            ready = false;
+        }
+        yield return new WaitForSeconds(3);
+        StartCoroutine(CheckForPlayers());
     }
 
     void ConnectToWebSocket()
     {
-        Transform ipConnect = canvas.GetChild(3).GetChild(3);
+        attemptedConnection = true;
         string ip = ipConnect.GetChild(1).GetComponent<TMP_InputField>().text;
         gm.IP = ip;
         try
         {
             wss = new WebSocket("wss://" + ip + ":8443");
-            ipConnect.GetChild(3).gameObject.SetActive(true);
-            ipConnect.GetChild(4).gameObject.SetActive(false);
+            connected = true;
             wss.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
             wss.Connect();
             wss.OnMessage += (sender, e) =>
@@ -92,16 +120,23 @@ public class MainMenu : MonoBehaviour
         }
         catch (Exception e)
         {
-            ipConnect.GetChild(4).gameObject.SetActive(true);
+            connected = false;
         }
     }
 
     void Update()
     {
-        ready = numberOfPlayers >= minNumberOfPlayers;
+        if (attemptedConnection)
+        {
+            SetConnection(connected);
+        }
+        ipConnect.gameObject.SetActive(gm.mobileControls);
+        ready = (numberOfPlayers >= minNumberOfPlayers && connected) || !gm.mobileControls;
         playerCountText.text = numberOfPlayers.ToString() + " / " + minNumberOfPlayers.ToString();
         playerCountAnimator.SetBool("greenEffect", ready);
         newGameButton.interactable = ready;
+        playerText.SetActive(connected && gm.mobileControls); 
+        
     }
     
     void MainMenuOpen(bool on = true)
@@ -127,6 +162,18 @@ public class MainMenu : MonoBehaviour
                 break;
             case (4):
                 ConnectToWebSocket();
+                break;
+            case (5):
+                if (mobileControlsSettingText.text == "x")
+                {
+                    gm.mobileControls = false;
+                    mobileControlsSettingText.text = "";
+                }
+                else
+                {
+                    gm.mobileControls = true;
+                    mobileControlsSettingText.text = "x";
+                }
                 break;
         }
     }

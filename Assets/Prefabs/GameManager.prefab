@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 2887832949154654780, guid: cbd8e1b80dd84044da31f7c7e88ba898, type: 3}
   IP: 
+  mobileControls: 1
   gameInProgress: 1
   highestLevelUnlocked: 0
   currentCheckpoint: 0

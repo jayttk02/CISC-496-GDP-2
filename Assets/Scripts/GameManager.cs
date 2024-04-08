@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public GameObject playerPrefab;
     public string IP;
+    public bool mobileControls;
 
     [Header("Stages")]
     public bool gameInProgress;
