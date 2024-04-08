@@ -9,9 +9,10 @@
     * path
     * express-ip
     * express
-    * ws  
+    * ws
+    * ejs
    These can all be installed by running "npm install [name of package]" in the terminal. Or combine it like this:  
-`npm install https && npm install fs && npm install path && npm install express-ip && npm install express && npm install ws`  
+`npm install https && npm install fs && npm install path && npm install express-ip && npm install express && npm install ws && npm install ejs`  
 3. Clone this project and navigate to the "Mobile Controls Web App" folder, then to the "public" subfolder. Open "ip.txt" in any text editor.
 4. Now, you will need your local IP address in order to run the server. On Windows, you can easily access this by running "ipconfig" and copying the address next to IPv4. Replace the contents of "ip.txt" with your local IP address and save the file.
 5. Navigate back to "Mobile Controls Web App" and use Node to run "server.js". You can do this with "node server.js" or by using VSCode and executing the file.
