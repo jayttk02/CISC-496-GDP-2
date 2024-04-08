@@ -1,6 +1,6 @@
 # How to run the server
 
-## Please note that I only had access to Windows machines. While this should all work on Mac in theory, instructions may vary.
+## Please note that I only had access to Windows machines and iPhones. While this should all work on Mac in theory, instructions may vary.
 
 1. Install Node JS (and npm along with it) on your machine.
 2. Using npm, install:
@@ -18,13 +18,11 @@
 5. Navigate back to "Mobile Controls Web App" and use Node to run "server.js". You can do this with "node server.js" or by using VSCode and executing the file.
 6. On any device connected to the same network (e.g. the machine running the server), navigate to `https://[your local IP address]:8443`. You should see a blue button that says "START." Note that you will have to click through a security warning because the site uses a self-signed certificate. In the terminal where Node JS executes, you should see your IP address mapped to the player number (player 1 or player 2) along with "New client connected!":
 
-![alt text](image.png) 
-
-7. Now, try connecting with two mobile devices. Accept when the web app asks permission to use orientation data. Devices are assigned to player 1 and 2 in order of joining. If player one is connected correctly, you should be able to see a stream of numbers output like this (these represent the angles being output for the gun):
+7. Now, disconnect that player (by closing the page) and try connecting with two mobile devices. Accept when the web app asks permission to use orientation data. Devices are assigned to player 1 and 2 in order of joining. If player one is connected correctly, you should be able to see a stream of numbers output like this (these represent the angles being output for the gun):
 
 ![alt text](image-1.png)
 
-Note that the rotation angles are based off the "pitch":
+You may have to refresh the page for the angles to register. Also, note that the rotation angles are based off the "pitch":
 
 ![alt text](image-3.png)
 
@@ -53,12 +51,13 @@ The number of players connected will match the number of connected IPs on the se
 * If you have any antiviruses enabled, disable them.
 * Ensure the device being used as player 1 supports orientation data. If it doesn't, you will get an alert saying "DeviceMotionEvent not defined."
 * Try restarting the server.
+* If a disconnect happens during the game, you will not have to exit the game, but you will have to reconnect before the player can execute their moves again.
 
 ## If all else fails
 
 Email 18rldv@queensu.ca. I respond fast :D
 
-The keyboard controls are also listed here:
+The keyboard controls are also listed here. Just "uncheck" mobile controls on the main menu:
 
 * Aim: mouse
 * Shoot: E
